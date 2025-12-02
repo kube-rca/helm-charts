@@ -1,0 +1,9 @@
+# Helm build artifacts
+charts/*/charts/
+*.tgz
+
+# Local environment files
+.DS_Store
+
+# Ignore external auth artifact
+charts/auth
