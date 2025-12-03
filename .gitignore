@@ -1,5 +1,4 @@
 # Helm build artifacts
-charts/*/charts/
 *.tgz
 
 # Local environment files
