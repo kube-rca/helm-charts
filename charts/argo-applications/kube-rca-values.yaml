@@ -28,3 +28,25 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
+  - name: alloy
+    namespace: argocd
+    destination:
+      namespace: monitoring
+    source:
+      repoURL: https://github.com/kube-rca/helm-charts.git
+      targetRevision: main
+      path: charts/alloy
+      helm:
+        valueFiles:
+          - kube-rca-values.yaml
+  - name: loki
+    namespace: argocd
+    destination:
+      namespace: monitoring
+    source:
+      repoURL: https://github.com/kube-rca/helm-charts.git
+      targetRevision: main
+      path: charts/loki
+      helm:
+        valueFiles:
+          - kube-rca-values.yaml
