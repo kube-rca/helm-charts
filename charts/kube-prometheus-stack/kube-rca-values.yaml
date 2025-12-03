@@ -19,17 +19,17 @@ grafana:
     - secretName: grafana-tls
       hosts:
       - grafana.kkamji.net
-  # additionalDataSources:
-  # - name: Loki
-  #   type: loki
-  #   access: proxy
-  #   url: http://loki-gateway:80
-  #   jsonData:
-  #     timeout: 60
-  #     maxLines: 1000
-  #     httpHeaderName1: "X-Scope-OrgID"
-  #   secureJsonData:
-  #     httpHeaderValue1: "kube-rca"
+  additionalDataSources:
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki-gateway:80
+    jsonData:
+      timeout: 60
+      maxLines: 1000
+      httpHeaderName1: "X-Scope-OrgID"
+    secureJsonData:
+      httpHeaderValue1: "kube-rca"
 
 prometheus:
   prometheusSpec:
