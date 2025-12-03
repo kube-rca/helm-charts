@@ -15,7 +15,7 @@ alloy:
       loki.write "default" {
         endpoint {
           url = "http://loki-gateway/loki/api/v1/push"
-          tenant_id = "kkamji"
+          tenant_id = "kube-rca"
         }
       }
 
@@ -104,7 +104,7 @@ alloy:
       loki.process "pod_logs" {
         stage.static_labels {
             values = {
-              cluster = "kkamji",
+              cluster = "kube-rca",
             }
         }
 
