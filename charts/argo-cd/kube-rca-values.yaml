@@ -291,7 +291,8 @@ notifications:
   triggers:
     trigger.on-deployed: |
       - description: Application is synced and healthy. Triggered once per commit.
-        oncePer: app.status.sync.revision
+        # mono-repo 환경에서는 sync.revision 대신 syncResult.revision 사용
+        oncePer: app.status.operationState.syncResult.revision
         send:
         - app-deployed
         when: app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
