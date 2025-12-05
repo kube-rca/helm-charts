@@ -30,6 +30,9 @@ alertmanager:
       group_interval: 5m
       repeat_interval: 4h
       routes:
+        # kube-rca 백엔드로 전송
+        - receiver: 'kube-rca-backend'
+          continue: true
         # Watchdog 예외처리
         - receiver: 'null'
           matchers:
@@ -44,6 +47,11 @@ alertmanager:
             - alertname = "KubeVersionMismatch"
     receivers:
       - name: 'null'
+      - name: 'kube-rca-backend'
+        webhook_configs:
+          # 추후 svc, ns 이름 확정 후 수정 필요
+          - url: 'http://kube-rca-backend.kube-rca.svc:8080/webhook/alertmanager'
+            send_resolved: true
       - name: 'slack'
         slack_configs:
           - api_url_file: '/etc/alertmanager/secrets/alertmanager-slack-webhook/url'
