@@ -34,6 +34,14 @@ alertmanager:
         - receiver: 'null'
           matchers:
             - alertname = "Watchdog"
+        # Cilium 사용, kube-proxy 예외처리
+        - receiver: 'null'
+          matchers:
+            - alertname = "KubeProxyDown"
+        # API server 버전 낮음, 임시 예외처리
+        - receiver: 'null'
+          matchers:
+            - alertname = "KubeVersionMismatch"
     receivers:
       - name: 'null'
       - name: 'slack'
