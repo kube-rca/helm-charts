@@ -47,6 +47,7 @@ notifications:
   secret:
     create: false
     # Exteranl-Secrets에서 불러오도록 
+    name: argocd-notifications-secret
     # secret name: argocd-notifications-secret
     # key: slack-token
     # value: {token}
