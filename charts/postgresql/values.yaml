@@ -36,17 +36,6 @@ global:
     ## @param global.postgresql.auth.secretKeys.replicationPasswordKey Name of key in existing secret to use for PostgreSQL credentials (overrides `auth.secretKeys.replicationPasswordKey`). Only used when `global.postgresql.auth.existingSecret` is set.
     ##
     fullnameOverride: ""
-    createSecret: true
-    auth:
-      postgresPassword: ""
-      username: ""
-      password: ""
-      database: ""
-      existingSecret: ""
-      secretKeys:
-        adminPasswordKey: ""
-        userPasswordKey: ""
-        replicationPasswordKey: ""
     ## @param global.postgresql.service.ports.postgresql PostgreSQL service port (overrides `service.ports.postgresql`)
     ##
     service:
@@ -149,12 +138,15 @@ image:
 ## ref: https://github.com/bitnami/containers/tree/main/bitnami/postgresql#creating-a-database-user-on-first-run
 ##
 auth:
-  enablePostgresUser: true
-  existingSecret: pg-secret
+  enablePostgresUser: true         # postgres 계정 활성화
+  existingSecret: ""               # 외부 시크릿 사용 안 함 → 차트가 생성
+  postgresPassword: ""             # 비워두면 랜덤 생성
+  username: "kuberca"              # 커스텀 유저 생성
+  password: ""                     # 비워두면 랜덤 생성
+  replicationPassword: ""          # replication 모드가 아니라면 무시
   secretKeys:
-    adminPasswordKey: pg-admin-password
-    userPasswordKey: pg-user-password
-    replicationPasswordKey: replication-password
+    adminPasswordKey: postgres-password
+    userPasswordKey: password
   ## @param auth.usePasswordFiles Mount credentials as a files instead of using an environment variable
   ##
   usePasswordFiles: true
