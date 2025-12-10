@@ -55,6 +55,6 @@ applications:
     destination:
       namespace: db
     source:
-      repoURL: https://github.com/kube-rca/k8s-resources.git
+      repoURL: https://github.com/kube-rca/helm-charts.git
       targetRevision: main
-      path: apps/db
+      path: charts/postgresql
