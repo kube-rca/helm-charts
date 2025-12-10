@@ -50,3 +50,11 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
+  - name: db
+    namespace: argocd
+    destination:
+      namespace: db
+    source:
+      repoURL: https://github.com/kube-rca/k8s-resources.git
+      targetRevision: main
+      path: apps/db
