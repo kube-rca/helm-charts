@@ -36,6 +36,16 @@ global:
     ## @param global.postgresql.auth.secretKeys.replicationPasswordKey Name of key in existing secret to use for PostgreSQL credentials (overrides `auth.secretKeys.replicationPasswordKey`). Only used when `global.postgresql.auth.existingSecret` is set.
     ##
     fullnameOverride: ""
+    auth:
+      postgresPassword: ""
+      username: ""
+      password: ""
+      database: ""
+      existingSecret: ""
+      secretKeys:
+        adminPasswordKey: ""
+        userPasswordKey: ""
+        replicationPasswordKey: ""
     ## @param global.postgresql.service.ports.postgresql PostgreSQL service port (overrides `service.ports.postgresql`)
     ##
     service:
@@ -147,14 +157,25 @@ auth:
   secretKeys:
     adminPasswordKey: postgres-password
     userPasswordKey: password
-  ## @param auth.usePasswordFiles Mount credentials as a files instead of using an environment variable
-  ##
-  usePasswordFiles: true
-## @param architecture PostgreSQL architecture (`standalone` or `replication`)
+    replicationPasswordKey: replication-password
+  usePasswordFiles: true           # 기본값; 파일로 마운트
 ##
 architecture: standalone
 ## Replication configuration
 ## Ignored if `architecture` is `standalone`
+##
+replication:
+  ## @param replication.synchronousCommit Set synchronous commit mode. Allowed values: `on`, `remote_apply`, `remote_write`, `local` and `off`
+  ## @param replication.numSynchronousReplicas Number of replicas that will have synchronous replication. Note: Cannot be greater than `readReplicas.replicaCount`.
+  ## ref: https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT
+  ##
+  synchronousCommit: "off"
+  numSynchronousReplicas: 0
+  ## @param replication.applicationName Cluster application name. Useful for advanced replication settings
+  ##
+  applicationName: my_application
+## @param containerPorts.postgresql PostgreSQL container port
+##
 containerPorts:
   postgresql: 5432
 ## Audit settings
