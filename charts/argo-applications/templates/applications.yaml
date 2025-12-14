@@ -18,6 +18,8 @@ metadata:
 {{- with .labels }}
 {{ toYaml . | nindent 4 }}
 {{- end }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 {{- with .annotations }}
   annotations:
 {{ toYaml . | nindent 4 }}
