@@ -17,6 +17,14 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
+  - name: postgresql
+    namespace: argocd
+    destination:
+      namespace: kube-rca
+    source:
+      repoURL: https://github.com/kube-rca/helm-charts.git
+      targetRevision: main
+      path: charts/postgresql
   - name: kube-rca
     namespace: argocd
     destination:
@@ -61,11 +69,3 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
-  - name: db
-    namespace: argocd
-    destination:
-      namespace: db
-    source:
-      repoURL: https://github.com/kube-rca/helm-charts.git
-      targetRevision: main
-      path: charts/postgresql
