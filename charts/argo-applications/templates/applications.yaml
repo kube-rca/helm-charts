@@ -4,10 +4,10 @@
 {{- $defaultProject := default "default" .Values.project -}}
 {{- $defaultSyncPolicy := .Values.syncPolicy -}}
 {{- range .Values.applications }}
-{{- $appNamespace := default $defaultNamespace .namespace -}}
-{{- $destination := default dict .destination -}}
-{{- $destNamespace := default $appNamespace (index $destination "namespace") -}}
-{{- $destServer := default $defaultServer (index $destination "server") -}}
+{{ $appNamespace := default $defaultNamespace .namespace -}}
+{{ $destination := default dict .destination -}}
+{{ $destNamespace := default $appNamespace (index $destination "namespace") -}}
+{{ $destServer := default $defaultServer (index $destination "server") -}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:

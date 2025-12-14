@@ -17,6 +17,17 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
+  - name: kube-rca
+    namespace: argocd
+    destination:
+      namespace: kube-rca
+    source:
+      repoURL: https://github.com/kube-rca/helm-charts.git
+      targetRevision: main
+      path: charts/kube-rca
+      helm:
+        valueFiles:
+          - kube-rca-values.yaml
   - name: kube-prometheus-stack
     namespace: argocd
     destination:
