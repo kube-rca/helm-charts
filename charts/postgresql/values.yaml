@@ -1466,7 +1466,7 @@ backup:
 passwordUpdateJob:
   ## @param passwordUpdateJob.enabled Enable password update job
   ##
-  enabled: false
+  enabled: true
   ## @param passwordUpdateJob.backoffLimit set backoff limit of the job
   ##
   backoffLimit: 10
