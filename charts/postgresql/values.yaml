@@ -38,9 +38,9 @@ global:
     fullnameOverride: ""
     auth:
       postgresPassword: ""
-      username: ""
+      username: "kube-rca"
       password: ""
-      database: ""
+      database: "kube-rca"
       existingSecret: ""
       secretKeys:
         adminPasswordKey: ""
