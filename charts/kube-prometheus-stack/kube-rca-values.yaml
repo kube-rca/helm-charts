@@ -39,6 +39,9 @@ alertmanager:
         - receiver: 'null'
           matchers:
             - alertname = "KubeVersionMismatch"
+        - receiver: 'kube-rca-backend'
+          matchers:
+            - alertname = "KubePodContainerOOMKilled"
     receivers:
       - name: 'null'
       - name: 'kube-rca-backend'
