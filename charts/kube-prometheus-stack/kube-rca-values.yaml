@@ -130,3 +130,18 @@ prometheus:
     - secretName: prometheus-tls
       hosts:
       - prometheus.kkamji.net
+
+additionalPrometheusRulesMap:
+  kube-rca-oomkilled:
+    groups:
+    - name: kube-rca-oomkilled
+      rules:
+      - alert: KubePodContainerOOMKilled
+        expr: |
+          kube_pod_container_status_last_terminated_reason{reason="OOMKilled", job="kube-state-metrics"} == 1
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: Pod container OOMKilled
+          description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) was OOMKilled.'
