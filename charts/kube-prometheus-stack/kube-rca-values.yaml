@@ -42,6 +42,9 @@ alertmanager:
         - receiver: 'kube-rca-backend'
           matchers:
             - alertname = "KubePodContainerOOMKilled"
+        - receiver: 'kube-rca-backend'
+          matchers:
+            - alertname = "KubePodImagePullError"
     receivers:
       - name: 'null'
       - name: 'kube-rca-backend'
@@ -148,3 +151,19 @@ additionalPrometheusRulesMap:
         annotations:
           summary: Pod container OOMKilled
           description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) was OOMKilled.'
+
+  kube-rca-image-pull-error:
+    groups:
+    - name: kube-rca-image-pull-error
+      rules:
+      - alert: KubePodImagePullError
+        expr: |
+          kube_pod_container_status_waiting_reason{reason="ErrImagePull", job="kube-state-metrics"} == 1
+          OR
+          kube_pod_container_status_waiting_reason{reason="ImagePullBackOff", job="kube-state-metrics"} == 1
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: Pod container ImagePullError
+          description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) failed to pull image.'
