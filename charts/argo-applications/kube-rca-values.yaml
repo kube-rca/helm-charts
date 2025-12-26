@@ -25,6 +25,9 @@ applications:
       repoURL: https://github.com/kube-rca/helm-charts.git
       targetRevision: main
       path: charts/postgresql
+      helm:
+        valueFiles:
+          - kube-rca-values.yaml
   - name: kube-rca
     namespace: argocd
     destination:
