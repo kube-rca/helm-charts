@@ -3,3 +3,30 @@ auth:
   secretKeys:
     adminPasswordKey: "postgres-password"
     userPasswordKey: "password"
+
+extraDeploy:
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      name: '{{ include "postgresql.v1.chart.fullname" . }}-ingress'
+      annotations:
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+        external-dns.alpha.kubernetes.io/target: 121.130.214.237
+    spec:
+      ingressClassName: nginx
+      rules:
+        - host: kuberca-db.kkamji.net
+          http:
+            paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: '{{ include "postgresql.v1.primary.fullname" . }}'
+                    port:
+                      name: tcp-postgresql
+      tls:
+        - secretName: kuberca-db-tls
+          hosts:
+            - kuberca-db.kkamji.net
