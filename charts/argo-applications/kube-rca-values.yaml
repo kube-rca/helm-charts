@@ -17,6 +17,17 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
+  - name: ingress-nginx
+    namespace: argocd
+    destination:
+      namespace: ingress-nginx
+    source:
+      repoURL: https://github.com/kube-rca/helm-charts.git
+      targetRevision: main
+      path: charts/ingress-nginx
+      helm:
+        valueFiles:
+          - kube-rca-values.yaml
   - name: postgresql
     namespace: argocd
     destination:
