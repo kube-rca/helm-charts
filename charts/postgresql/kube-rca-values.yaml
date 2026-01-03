@@ -3,3 +3,13 @@ auth:
   secretKeys:
     adminPasswordKey: "postgres-password"
     userPasswordKey: "password"
+
+image:
+  repository: pgvector/pgvector
+  tag: pg18-trixie
+
+primary:
+  initdb:
+    scripts:
+      enable-pgvector.sql: |
+        CREATE EXTENSION IF NOT EXISTS vector;
