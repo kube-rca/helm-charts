@@ -5,6 +5,7 @@ auth:
     userPasswordKey: "password"
 
 image:
+  registry: registry.hub.docker.com
   repository: pgvector/pgvector
   tag: pg18-trixie
 
