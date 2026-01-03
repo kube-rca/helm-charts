@@ -1,0 +1,33 @@
+repos:
+  - repo: local
+    hooks:
+      - id: helm-lint-kube-rca
+        name: helm lint kube-rca
+        entry: bash
+        args:
+          - -c
+          - |
+              command -v helm >/dev/null 2>&1 || { echo "pre-commit: helm not found. Install Helm to lint charts." >&2; exit 1; }
+              helm lint charts/kube-rca
+        language: system
+        files: ^charts/kube-rca/
+        pass_filenames: false
+        stages: [pre-commit]
+      - id: helm-docs-kube-rca
+        name: helm-docs kube-rca
+        entry: bash
+        args:
+          - -c
+          - |
+              command -v helm-docs >/dev/null 2>&1 || { echo "pre-commit: helm-docs not found. Install helm-docs to generate chart docs." >&2; exit 1; }
+              (cd charts/kube-rca && helm-docs)
+              if ! git diff --quiet -- charts/kube-rca; then
+                echo "pre-commit: helm-docs generated changes under 'charts/kube-rca'." >&2
+                echo "pre-commit: stage the changes and retry commit." >&2
+                git diff --name-only -- charts/kube-rca >&2 || true
+                exit 1
+              fi
+        language: system
+        files: ^charts/kube-rca/
+        pass_filenames: false
+        stages: [pre-commit]
