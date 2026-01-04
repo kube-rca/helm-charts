@@ -1,5 +1,0 @@
-# kube-rca overrides for chaos-mesh
-
-chaosDaemon:
-  runtime: containerd
-  socketPath: /run/containerd/containerd.sock
