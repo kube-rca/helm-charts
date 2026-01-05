@@ -360,9 +360,7 @@ primary:
     ##      #!/bin/sh
     ##      echo "Do something."
     ##
-    scripts:
-      enable-pgvector.sql: |
-        CREATE EXTENSION IF NOT EXISTS vector;
+    scripts: {}
     ## @param primary.initdb.scriptsConfigMap ConfigMap with scripts to be run at first boot
     ## NOTE: This will override `primary.initdb.scripts`
     ##
