@@ -1,5 +1,6 @@
 applications:
-  - name: argocd
+  argocd:
+    name: argocd
     namespace: argocd
     source:
       repoURL: https://github.com/kube-rca/helm-charts.git
@@ -8,7 +9,8 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
-  - name: argo-applications
+  argo-applications:
+    name: argo-applications
     namespace: argocd
     source:
       repoURL: https://github.com/kube-rca/helm-charts.git
@@ -17,7 +19,8 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
-  - name: k8s-resources
+  k8s-resources:
+    name: k8s-resources
     namespace: argocd
     destination:
       namespace: kube-rca
@@ -27,7 +30,8 @@ applications:
       path: external-secrets
       directory:
         recurse: true
-  - name: ingress-nginx
+  ingress-nginx:
+    name: ingress-nginx
     namespace: argocd
     destination:
       namespace: ingress-nginx
@@ -38,7 +42,8 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
-  - name: postgresql
+  postgresql:
+    name: postgresql
     namespace: argocd
     destination:
       namespace: kube-rca
@@ -49,7 +54,8 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
-  - name: kube-rca
+  kube-rca:
+    name: kube-rca
     namespace: argocd
     destination:
       namespace: kube-rca
@@ -60,7 +66,8 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
-  - name: kube-prometheus-stack
+  kube-prometheus-stack:
+    name: kube-prometheus-stack
     namespace: argocd
     destination:
       namespace: monitoring
@@ -71,7 +78,8 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
-  - name: alloy
+  alloy:
+    name: alloy
     namespace: argocd
     destination:
       namespace: monitoring
@@ -82,7 +90,8 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
-  - name: loki
+  loki:
+    name: loki
     namespace: argocd
     destination:
       namespace: monitoring
@@ -93,7 +102,8 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
-  - name: chaos-mesh
+  chaos-mesh:
+    name: chaos-mesh
     namespace: argocd
     destination:
       namespace: chaos-mesh
@@ -104,7 +114,8 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
-  - name: microservices-demo
+  microservices-demo:
+    name: microservices-demo
     namespace: argocd
     destination:
       namespace: microservices-demo

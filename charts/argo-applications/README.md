@@ -8,7 +8,7 @@ Argo CD App of Apps chart for kuberca
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| applications | list | `[]` |  |
+| applications | object | `{}` |  |
 | destinationNamespace | string | `"argocd"` |  |
 | destinationServer | string | `"https://kubernetes.default.svc"` |  |
 | project | string | `"default"` |  |

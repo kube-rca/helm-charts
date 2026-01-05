@@ -3,41 +3,42 @@
 {{- $defaultServer := default "https://kubernetes.default.svc" .Values.destinationServer -}}
 {{- $defaultProject := default "default" .Values.project -}}
 {{- $defaultSyncPolicy := .Values.syncPolicy -}}
-{{- range .Values.applications }}
-{{- if or (not (hasKey . "enabled")) .enabled }}
-{{ $appNamespace := default $defaultNamespace .namespace -}}
-{{ $destination := default dict .destination -}}
-{{ $destNamespace := default $appNamespace (index $destination "namespace") -}}
-{{ $destServer := default $defaultServer (index $destination "server") -}}
+{{- range $appKey, $app := .Values.applications }}
+{{- if or (not (hasKey $app "enabled")) $app.enabled }}
+{{- $appNamespace := default $defaultNamespace $app.namespace -}}
+{{- $destination := default dict $app.destination -}}
+{{- $destNamespace := default $appNamespace (index $destination "namespace") }}
+{{- $destServer := default $defaultServer (index $destination "server") }}
+{{- $appName := default $appKey $app.name }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ required "applications[].name is required" .name }}
+  name: {{ $appName }}
   namespace: {{ $appNamespace }}
   labels:
 {{ include "argo-applications.labels" $root | nindent 4 }}
-{{- with .labels }}
+{{- with $app.labels }}
 {{ toYaml . | nindent 4 }}
 {{- end }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
-{{- with .annotations }}
+{{- with $app.annotations }}
   annotations:
 {{ toYaml . | nindent 4 }}
 {{- end }}
 spec:
-  project: {{ default $defaultProject .project }}
+  project: {{ default $defaultProject $app.project }}
   destination:
     server: {{ $destServer }}
     namespace: {{ $destNamespace }}
   source:
-{{ required "applications[].source is required" .source | toYaml | nindent 4 }}
-{{- $syncPolicy := default $defaultSyncPolicy .syncPolicy }}
+{{ required (printf "applications.%s.source is required" $appKey) $app.source | toYaml | nindent 4 }}
+{{- $syncPolicy := default $defaultSyncPolicy $app.syncPolicy }}
 {{- if $syncPolicy }}
   syncPolicy:
 {{ toYaml $syncPolicy | nindent 4 }}
 {{- end }}
-{{- with .ignoreDifferences }}
+{{- with $app.ignoreDifferences }}
   ignoreDifferences:
 {{ toYaml . | nindent 4 }}
 {{- end }}

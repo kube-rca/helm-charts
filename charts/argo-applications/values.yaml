@@ -10,4 +10,4 @@ syncPolicy:
     - ApplyOutOfSyncOnly=true
     - ServerSideApply=true
 
-applications: []
+applications: {}
