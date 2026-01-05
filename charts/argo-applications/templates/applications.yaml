@@ -4,6 +4,7 @@
 {{- $defaultProject := default "default" .Values.project -}}
 {{- $defaultSyncPolicy := .Values.syncPolicy -}}
 {{- range .Values.applications }}
+{{- if or (not (hasKey . "enabled")) .enabled }}
 {{ $appNamespace := default $defaultNamespace .namespace -}}
 {{ $destination := default dict .destination -}}
 {{ $destNamespace := default $appNamespace (index $destination "namespace") -}}
@@ -41,4 +42,5 @@ spec:
 {{ toYaml . | nindent 4 }}
 {{- end }}
 ---
+{{- end }}
 {{- end }}

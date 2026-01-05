@@ -93,6 +93,17 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
+  - name: chaos-mesh
+    namespace: argocd
+    destination:
+      namespace: chaos-mesh
+    source:
+      repoURL: https://github.com/kube-rca/helm-charts.git
+      targetRevision: main
+      path: charts/chaos-mesh
+      helm:
+        valueFiles:
+          - kube-rca-values.yaml
   - name: microservices-demo
     namespace: argocd
     destination:
@@ -100,6 +111,4 @@ applications:
     source:
       repoURL: https://github.com/GoogleCloudPlatform/microservices-demo.git
       targetRevision: main
-      path: release
-      directory:
-        include: "kubernetes-manifests.yaml"
+      path: helm-chart
