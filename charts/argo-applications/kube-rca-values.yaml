@@ -1,5 +1,6 @@
 applications:
   argocd:
+    enabled: true
     name: argocd
     namespace: argocd
     source:
@@ -10,6 +11,7 @@ applications:
         valueFiles:
           - kube-rca-values.yaml
   argo-applications:
+    enabled: true
     name: argo-applications
     namespace: argocd
     source:
@@ -20,6 +22,7 @@ applications:
         valueFiles:
           - kube-rca-values.yaml
   k8s-resources:
+    enabled: true
     name: k8s-resources
     namespace: argocd
     destination:
@@ -31,6 +34,7 @@ applications:
       directory:
         recurse: true
   ingress-nginx:
+    enabled: true
     name: ingress-nginx
     namespace: argocd
     destination:
@@ -43,6 +47,7 @@ applications:
         valueFiles:
           - kube-rca-values.yaml
   postgresql:
+    enabled: true
     name: postgresql
     namespace: argocd
     destination:
@@ -55,6 +60,7 @@ applications:
         valueFiles:
           - kube-rca-values.yaml
   kube-rca:
+    enabled: true
     name: kube-rca
     namespace: argocd
     destination:
@@ -67,6 +73,7 @@ applications:
         valueFiles:
           - kube-rca-values.yaml
   kube-prometheus-stack:
+    enabled: true
     name: kube-prometheus-stack
     namespace: argocd
     destination:
@@ -79,6 +86,7 @@ applications:
         valueFiles:
           - kube-rca-values.yaml
   alloy:
+    enabled: true
     name: alloy
     namespace: argocd
     destination:
@@ -91,6 +99,7 @@ applications:
         valueFiles:
           - kube-rca-values.yaml
   loki:
+    enabled: true
     name: loki
     namespace: argocd
     destination:
@@ -103,6 +112,7 @@ applications:
         valueFiles:
           - kube-rca-values.yaml
   chaos-mesh:
+    enabled: true
     name: chaos-mesh
     namespace: argocd
     destination:
@@ -115,6 +125,7 @@ applications:
         valueFiles:
           - kube-rca-values.yaml
   microservices-demo:
+    enabled: true
     name: microservices-demo
     namespace: argocd
     destination:

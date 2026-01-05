@@ -33,7 +33,14 @@ spec:
     namespace: {{ $destNamespace }}
   source:
 {{ required (printf "applications.%s.source is required" $appKey) $app.source | toYaml | nindent 4 }}
-{{- $syncPolicy := default $defaultSyncPolicy $app.syncPolicy }}
+{{- $syncPolicy := $defaultSyncPolicy }}
+{{- if hasKey $app "syncPolicy" }}
+  {{- if kindIs "map" $app.syncPolicy }}
+    {{- $syncPolicy = merge (deepCopy $defaultSyncPolicy) $app.syncPolicy }}
+  {{- else }}
+    {{- $syncPolicy = $app.syncPolicy }}
+  {{- end }}
+{{- end }}
 {{- if $syncPolicy }}
   syncPolicy:
 {{ toYaml $syncPolicy | nindent 4 }}
