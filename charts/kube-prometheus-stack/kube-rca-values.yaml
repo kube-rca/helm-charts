@@ -137,11 +137,23 @@ prometheus:
       hosts:
       - prometheus.kkamji.net
 
-customRules:
-  KubePodCrashLooping:
-    for: 0m
+defaultRules:
+  disabled:
+    KubePodCrashLooping: true
 
 additionalPrometheusRulesMap:
+  kube-rca-crashlooping:
+    groups:
+    - name: kube-rca-crashlooping
+      rules:
+      - alert: KubePodCrashLooping
+        expr: max_over_time(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff", job="{{ $kubeStateMetricsJob }}", namespace{{ $namespaceOperator }}"{{ $targetNamespace }}"}[5m]) >= 1
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: Pod is crash looping.
+          description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) is in CrashLoopBackOff.'
   kube-rca-oomkilled:
     groups:
     - name: kube-rca-oomkilled
@@ -149,11 +161,9 @@ additionalPrometheusRulesMap:
       - alert: KubePodContainerOOMKilled
         expr: |
           (
+            increase(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[5m]) > 0
+            and on (namespace, pod, container)
             kube_pod_container_status_last_terminated_reason{reason="OOMKilled", job="kube-state-metrics"} == 1
-          )
-          OR
-          (
-            increase(container_oom_events_total[5m]) > 0
           )
         for: 0m
         labels:
@@ -168,10 +178,8 @@ additionalPrometheusRulesMap:
       rules:
       - alert: KubePodImagePullError
         expr: |
-          kube_pod_container_status_waiting_reason{reason="ErrImagePull", job="kube-state-metrics"} == 1
-          OR
-          kube_pod_container_status_waiting_reason{reason="ImagePullBackOff", job="kube-state-metrics"} == 1
-        for: 0m
+          max_over_time(kube_pod_container_status_waiting_reason{reason=~"ErrImagePull|ImagePullBackOff", job="kube-state-metrics"}[5m]) >= 1
+        for: 3m
         labels:
           severity: critical
         annotations:
