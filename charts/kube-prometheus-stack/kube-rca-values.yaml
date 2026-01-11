@@ -137,6 +137,10 @@ prometheus:
       hosts:
       - prometheus.kkamji.net
 
+customRules:
+  KubePodCrashLooping:
+    for: 0m
+
 additionalPrometheusRulesMap:
   kube-rca-oomkilled:
     groups:
@@ -153,7 +157,7 @@ additionalPrometheusRulesMap:
           )
         for: 0m
         labels:
-          severity: warning
+          severity: critical
         annotations:
           summary: Pod container OOMKilled
           description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) was OOMKilled.'
@@ -169,7 +173,7 @@ additionalPrometheusRulesMap:
           kube_pod_container_status_waiting_reason{reason="ImagePullBackOff", job="kube-state-metrics"} == 1
         for: 0m
         labels:
-          severity: warning
+          severity: critical
         annotations:
           summary: Pod container ImagePullError
           description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) failed to pull image.'
