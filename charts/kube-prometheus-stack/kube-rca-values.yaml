@@ -144,7 +144,13 @@ additionalPrometheusRulesMap:
       rules:
       - alert: KubePodContainerOOMKilled
         expr: |
-          kube_pod_container_status_last_terminated_reason{reason="OOMKilled", job="kube-state-metrics"} == 1
+          (
+            kube_pod_container_status_last_terminated_reason{reason="OOMKilled", job="kube-state-metrics"} == 1
+          )
+          OR
+          (
+            increase(container_oom_events_total[5m]) > 0
+          )
         for: 0m
         labels:
           severity: warning
