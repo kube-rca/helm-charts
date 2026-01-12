@@ -147,7 +147,7 @@ additionalPrometheusRulesMap:
     - name: kube-rca-crashlooping
       rules:
       - alert: KubePodCrashLooping
-        expr: max_over_time(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff", job="{{ $kubeStateMetricsJob }}", namespace{{ $namespaceOperator }}"{{ $targetNamespace }}"}[5m]) >= 1
+        expr: max_over_time(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff", job="kube-state-metrics", namespace=~".*"}[5m]) >= 1
         for: 3m
         labels:
           severity: critical
