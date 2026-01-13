@@ -131,6 +131,9 @@ applications:
     destination:
       namespace: microservices-demo
     source:
-      repoURL: https://github.com/GoogleCloudPlatform/microservices-demo.git
+      repoURL: https://github.com/kube-rca/helm-charts.git
       targetRevision: main
-      path: helm-chart
+      path: charts/microservices-demo
+      helm:
+        valueFiles:
+          - kube-rca-values.yaml
