@@ -163,7 +163,11 @@ additionalPrometheusRulesMap:
           (
             increase(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[5m]) > 0
             and on (namespace, pod, container)
-            kube_pod_container_status_last_terminated_reason{reason="OOMKilled", job="kube-state-metrics"} == 1
+            (
+              kube_pod_container_status_last_terminated_reason{reason="OOMKilled", job="kube-state-metrics"} == 1
+              or
+              kube_pod_container_status_last_terminated_exitcode{job="kube-state-metrics"} == 137
+            )
           )
         for: 0m
         labels:
