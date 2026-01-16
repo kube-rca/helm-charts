@@ -124,6 +124,38 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
+  istio-base:
+    enabled: true
+    name: istio-base
+    namespace: argocd
+    destination:
+      namespace: istio-system
+    syncPolicy:
+      syncOptions:
+        - ServerSideApply=true
+    source:
+      repoURL: https://github.com/kube-rca/helm-charts.git
+      targetRevision: main
+      path: charts/istio-base
+      helm:
+        valueFiles:
+          - kube-rca-values.yaml
+  istio-istiod:
+    enabled: true
+    name: istio-istiod
+    namespace: argocd
+    destination:
+      namespace: istio-system
+    syncPolicy:
+      syncOptions:
+        - ServerSideApply=true
+    source:
+      repoURL: https://github.com/kube-rca/helm-charts.git
+      targetRevision: main
+      path: charts/istio-istiod
+      helm:
+        valueFiles:
+          - kube-rca-values.yaml
   microservices-demo:
     enabled: true
     name: microservices-demo
