@@ -16,5 +16,8 @@ currencyService:
       cpu: 200m
       memory: 512Mi
 
+sidecars:
+  create: true
+
 loadGenerator:
   create: false

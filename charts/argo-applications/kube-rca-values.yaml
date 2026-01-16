@@ -130,6 +130,10 @@ applications:
     namespace: argocd
     destination:
       namespace: microservices-demo
+    syncPolicy:
+      managedNamespaceMetadata:
+        labels:
+          istio-injection: enabled
     source:
       repoURL: https://github.com/kube-rca/helm-charts.git
       targetRevision: main
