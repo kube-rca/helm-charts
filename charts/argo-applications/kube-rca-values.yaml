@@ -133,6 +133,13 @@ applications:
     syncPolicy:
       syncOptions:
         - ServerSideApply=true
+    ignoreDifferences:
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+        name: istiod-default-validator
+        jsonPointers:
+          - /webhooks/0/clientConfig/caBundle
+          - /webhooks/0/failurePolicy
     source:
       repoURL: https://github.com/kube-rca/helm-charts.git
       targetRevision: main
