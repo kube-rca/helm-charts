@@ -215,6 +215,7 @@ spec:
   egress:
   - hosts:
     - istio-system/*
+    - ./*
     - ./{{ .Values.adService.name }}.{{ .Release.Namespace }}.svc.cluster.local
     - ./{{ .Values.cartService.name }}.{{ .Release.Namespace }}.svc.cluster.local
     - ./{{ .Values.checkoutService.name }}.{{ .Release.Namespace }}.svc.cluster.local

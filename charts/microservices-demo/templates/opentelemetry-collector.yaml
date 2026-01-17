@@ -223,6 +223,7 @@ spec:
   egress:
   - hosts:
     - istio-system/*
+    - ./*
 {{- end }}
 {{- if .Values.authorizationPolicies.create }}
 ---
