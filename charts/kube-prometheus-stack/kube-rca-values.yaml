@@ -117,6 +117,34 @@ prometheus:
         regex: (.+)(?::\d+);(\d+)
         replacement: $1:$2
 
+    # Istio Envoy sidecar metrics
+    - job_name: 'envoy-stats'
+      metrics_path: /stats/prometheus
+      kubernetes_sd_configs:
+      - role: pod
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_container_port_name]
+        action: keep
+        regex: '.*-envoy-prom'
+      - action: labelmap
+        regex: __meta_kubernetes_pod_label_(.+)
+      - source_labels: [__meta_kubernetes_namespace]
+        target_label: namespace
+      - source_labels: [__meta_kubernetes_pod_name]
+        target_label: pod
+
+    # Istiod control plane metrics
+    - job_name: 'istiod'
+      kubernetes_sd_configs:
+      - role: endpoints
+        namespaces:
+          names:
+          - istio-system
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+        action: keep
+        regex: istiod;http-monitoring
+
     retention: 14d
   ingress:
     ingressClassName: nginx
