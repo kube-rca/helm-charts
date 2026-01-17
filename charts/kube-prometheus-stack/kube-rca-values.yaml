@@ -41,7 +41,7 @@ alertmanager:
             - alertname = "KubeVersionMismatch"
         - receiver: 'kube-rca-backend'
           matchers:
-            - alertname = "KubePodContainerStatusKilled"
+            - alertname = "KubePodContainerTerminated"
         - receiver: 'kube-rca-backend'
           matchers:
             - alertname = "KubePodImagePullError"
@@ -89,6 +89,8 @@ grafana:
     dashboards:
       folderAnnotation: "grafana_folder"
       defaultFolderName: "Default Dashboard"
+      provider:
+        foldersFromFilesStructure: true
 
 prometheus:
   prometheusSpec:
@@ -192,23 +194,23 @@ additionalPrometheusRulesMap:
         annotations:
           summary: Pod is crash looping.
           description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) is in CrashLoopBackOff.'
-  kube-rca-container-status-killed:
+  kube-rca-container-terminated:
     groups:
-    - name: kube-rca-container-status-killed
+    - name: kube-rca-container-terminated
       rules:
-      - alert: KubePodContainerStatusKilled
+      - alert: KubePodContainerTerminated
         expr: |
           (
             increase(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[5m]) > 0
             and on (namespace, pod, container)
-            kube_pod_container_status_last_terminated_exitcode{job="kube-state-metrics"} == 137
+            kube_pod_container_status_last_terminated_exitcode{job="kube-state-metrics"} != 0
           )
         for: 0m
         labels:
           severity: critical
         annotations:
-          summary: Pod container killed (SIGKILL)
-          description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) was killed with SIGKILL (exit code 137). Possible causes: OOMKilled, liveness probe failure, resource limits, or forced termination.'
+          summary: Pod container terminated abnormally
+          description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) terminated with non-zero exit code.'
 
   kube-rca-image-pull-error:
     groups:
