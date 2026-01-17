@@ -88,7 +88,7 @@ grafana:
   sidecar:
     dashboards:
       folderAnnotation: "grafana_folder"
-      folder: "Default Dashboard"
+      defaultFolderName: "Default Dashboard"
 
 prometheus:
   prometheusSpec:
