@@ -56,11 +56,28 @@ alloy:
           target_label = "container"
         }
 
-        // Label creation -  "app" field from "__meta_kubernetes_pod_label_app_kubernetes_io_name"
+        // Label creation - "app" field
+        // 1) 먼저 단순 "app" 라벨에서 추출 (microservices-demo 등)
         rule {
-          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+          source_labels = ["__meta_kubernetes_pod_label_app"]
           action = "replace"
           target_label = "app"
+        }
+
+        // 2) "app.kubernetes.io/name" 라벨이 있으면 덮어씀 (kube-rca 등 표준 Helm 차트)
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+          regex = "(.+)"
+          action = "replace"
+          target_label = "app"
+        }
+
+        // Label creation - "component" field from "app.kubernetes.io/component"
+        // kube-rca 차트의 agent, backend, frontend 구분용
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_component"]
+          action = "replace"
+          target_label = "component"
         }
 
         // Label creation -  "job" field from "__meta_kubernetes_namespace" and "__meta_kubernetes_pod_container_name"
