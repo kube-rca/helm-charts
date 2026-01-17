@@ -20,4 +20,4 @@ sidecars:
   create: true
 
 loadGenerator:
-  create: false
+  create: true
