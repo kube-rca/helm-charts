@@ -41,7 +41,7 @@ alertmanager:
             - alertname = "KubeVersionMismatch"
         - receiver: 'kube-rca-backend'
           matchers:
-            - alertname = "KubePodContainerOOMKilled"
+            - alertname = "KubePodContainerStatusKilled"
         - receiver: 'kube-rca-backend'
           matchers:
             - alertname = "KubePodImagePullError"
@@ -188,27 +188,23 @@ additionalPrometheusRulesMap:
         annotations:
           summary: Pod is crash looping.
           description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) is in CrashLoopBackOff.'
-  kube-rca-oomkilled:
+  kube-rca-container-status-killed:
     groups:
-    - name: kube-rca-oomkilled
+    - name: kube-rca-container-status-killed
       rules:
-      - alert: KubePodContainerOOMKilled
+      - alert: KubePodContainerStatusKilled
         expr: |
           (
             increase(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[5m]) > 0
             and on (namespace, pod, container)
-            (
-              kube_pod_container_status_last_terminated_reason{reason="OOMKilled", job="kube-state-metrics"} == 1
-              or
-              kube_pod_container_status_last_terminated_exitcode{job="kube-state-metrics"} == 137
-            )
+            kube_pod_container_status_last_terminated_exitcode{job="kube-state-metrics"} == 137
           )
         for: 0m
         labels:
           severity: critical
         annotations:
-          summary: Pod container OOMKilled
-          description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) was OOMKilled.'
+          summary: Pod container killed (SIGKILL)
+          description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) was killed with SIGKILL (exit code 137). Possible causes: OOMKilled, liveness probe failure, resource limits, or forced termination.'
 
   kube-rca-image-pull-error:
     groups:
