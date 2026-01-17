@@ -85,6 +85,39 @@ grafana:
       httpHeaderName1: "X-Scope-OrgID"
     secureJsonData:
       httpHeaderValue1: "kube-rca"
+  sidecar:
+    dashboards:
+      folderAnnotation: "grafana_folder"
+      annotations:
+        grafana_folder: "Default DashBoards"
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: 'default'
+          orgId: 1
+          folder: ''
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+        - name: 'demo-application'
+          orgId: 1
+          folder: 'Demo-Application'
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/demo-application
+        - name: 'test'
+          orgId: 1
+          folder: 'Test'
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/test
 
 prometheus:
   prometheusSpec:
