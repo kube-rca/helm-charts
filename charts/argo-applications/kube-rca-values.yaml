@@ -133,6 +133,8 @@ applications:
     syncPolicy:
       syncOptions:
         - ServerSideApply=true
+    # istiod가 런타임에 caBundle 패치 시 failurePolicy를 Fail로 변경함
+    # 이는 정상 동작이므로 ArgoCD에서 무시
     ignoreDifferences:
       - group: admissionregistration.k8s.io
         kind: ValidatingWebhookConfiguration
