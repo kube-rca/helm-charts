@@ -195,3 +195,13 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
+  load-generator:
+    enabled: true
+    name: load-generator
+    namespace: argocd
+    destination:
+      namespace: bookinfo
+    source:
+      repoURL: https://github.com/kube-rca/helm-charts.git
+      targetRevision: main
+      path: charts/load-generator
