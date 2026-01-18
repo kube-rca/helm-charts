@@ -1,0 +1,24 @@
+replicaCount: 1
+
+image:
+  repository: grafana/k6
+  tag: "0.52.0"
+  pullPolicy: IfNotPresent
+
+# Target configuration
+target:
+  baseUrl: "http://productpage.bookinfo.svc.cluster.local:9080"
+  rps: 150
+  duration: "8760h"  # 1 year (effectively infinite)
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
