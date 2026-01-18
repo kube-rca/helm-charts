@@ -44,9 +44,6 @@ alertmanager:
             - alertname = "KubePodContainerTerminated"
         - receiver: 'kube-rca-backend'
           matchers:
-            - alertname = "KubePodImagePullError"
-        - receiver: 'kube-rca-backend'
-          matchers:
             - alertname = "IstioHigh5xxErrorRate"
         - receiver: 'kube-rca-backend'
           matchers:
@@ -188,18 +185,6 @@ defaultRules:
     KubePodCrashLooping: true
 
 additionalPrometheusRulesMap:
-  kube-rca-crashlooping:
-    groups:
-    - name: kube-rca-crashlooping
-      rules:
-      - alert: KubePodCrashLooping
-        expr: max_over_time(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff", job="kube-state-metrics", namespace=~".*"}[5m]) >= 1
-        for: 3m
-        labels:
-          severity: critical
-        annotations:
-          summary: Pod is crash looping.
-          description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) is in CrashLoopBackOff.'
   kube-rca-container-terminated:
     groups:
     - name: kube-rca-container-terminated
@@ -211,26 +196,16 @@ additionalPrometheusRulesMap:
             and on (namespace, pod, container)
             kube_pod_container_status_last_terminated_exitcode{job="kube-state-metrics"} != 0
           )
+          * on (namespace, pod, container) group_left(reason)
+          kube_pod_container_status_last_terminated_reason{job="kube-state-metrics"}
         for: 0m
         labels:
           severity: critical
         annotations:
           summary: Pod container terminated abnormally
-          description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) terminated with non-zero exit code.'
-
-  kube-rca-image-pull-error:
-    groups:
-    - name: kube-rca-image-pull-error
-      rules:
-      - alert: KubePodImagePullError
-        expr: |
-          max_over_time(kube_pod_container_status_waiting_reason{reason=~"ErrImagePull|ImagePullBackOff", job="kube-state-metrics"}[5m]) >= 1
-        for: 3m
-        labels:
-          severity: critical
-        annotations:
-          summary: Pod container ImagePullError
-          description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) failed to pull image.'
+          description: |
+            Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) terminated abnormally.
+            Reason: {{ $labels.reason }}
 
   kube-rca-istio-high-5xx-error-rate:
     groups:
