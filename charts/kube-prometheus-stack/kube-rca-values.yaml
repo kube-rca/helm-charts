@@ -44,6 +44,9 @@ alertmanager:
             - alertname = "KubePodContainerTerminated"
         - receiver: 'kube-rca-backend'
           matchers:
+            - alertname = "KubePodImagePullError"
+        - receiver: 'kube-rca-backend'
+          matchers:
             - alertname = "IstioHigh5xxErrorRate"
         - receiver: 'kube-rca-backend'
           matchers:
@@ -205,6 +208,25 @@ additionalPrometheusRulesMap:
           summary: Pod container terminated abnormally
           description: |
             Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) terminated abnormally.
+            Reason: {{ $labels.reason }}
+
+  kube-rca-image-pull-error:
+    groups:
+    - name: kube-rca-image-pull-error
+      rules:
+      - alert: KubePodImagePullError
+        expr: |
+          max_over_time(kube_pod_container_status_waiting_reason{
+            reason=~"ErrImagePull|ImagePullBackOff",
+            job="kube-state-metrics"
+          }[5m]) >= 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: Pod failed to pull image
+          description: |
+            Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) failed to pull image.
             Reason: {{ $labels.reason }}
 
   kube-rca-istio-high-5xx-error-rate:
