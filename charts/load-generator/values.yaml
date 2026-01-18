@@ -8,16 +8,18 @@ image:
 # Target configuration
 target:
   baseUrl: "http://productpage.bookinfo.svc.cluster.local:9080"
-  rps: 150
+  rps: 100
   duration: "8760h"  # 1 year (effectively infinite)
+  preAllocatedVUs: 100
+  maxVUs: 500
 
 resources:
   limits:
-    cpu: 500m
-    memory: 256Mi
+    cpu: "2"
+    memory: 1Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 500m
+    memory: 512Mi
 
 nodeSelector: {}
 tolerations: []

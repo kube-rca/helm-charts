@@ -45,6 +45,10 @@ spec:
               value: {{ .Values.target.rps | quote }}
             - name: DURATION
               value: {{ .Values.target.duration | quote }}
+            - name: PRE_ALLOCATED_VUS
+              value: {{ .Values.target.preAllocatedVUs | quote }}
+            - name: MAX_VUS
+              value: {{ .Values.target.maxVUs | quote }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
