@@ -201,7 +201,7 @@ additionalPrometheusRulesMap:
           )
           * on (namespace, pod, container) group_left(reason)
           kube_pod_container_status_last_terminated_reason{job="kube-state-metrics"}
-        for: 0m
+        for: 1m
         labels:
           severity: critical
         annotations:
@@ -216,11 +216,11 @@ additionalPrometheusRulesMap:
       rules:
       - alert: KubePodImagePullError
         expr: |
-          max_over_time(kube_pod_container_status_waiting_reason{
-            reason=~"ErrImagePull|ImagePullBackOff",
+          kube_pod_container_status_waiting_reason{
+            reason="ImagePullBackOff",
             job="kube-state-metrics"
-          }[5m]) >= 1
-        for: 5m
+          } == 1
+        for: 1m
         labels:
           severity: critical
         annotations:
