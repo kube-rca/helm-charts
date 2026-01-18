@@ -245,4 +245,4 @@ additionalPrometheusRulesMap:
           severity: critical
         annotations:
           summary: High error rate detected on Istio service
-          description: 'Service {{ $labels.destination_service_name }} in {{ $labels.destination_service_namespace }} has error rate {{ printf "%.1f" (mul $value 100) }}% (source: {{ $labels.source_workload }})'
+          description: 'Service {{ $labels.destination_service_name }} in {{ $labels.destination_service_namespace }} has error rate {{ $value | humanizePercentage }} (source: {{ $labels.source_workload }})'
