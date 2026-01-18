@@ -1,0 +1,12 @@
+gateway:
+  enabled: true
+
+ingress:
+  enabled: false
+  ingressClassName: nginx
+  annotations: {}
+  hosts: []
+  paths:
+    - /
+  pathType: Prefix
+  tls: []

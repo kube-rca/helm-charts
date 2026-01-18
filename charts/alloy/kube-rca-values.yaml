@@ -57,7 +57,7 @@ alloy:
         }
 
         // Label creation - "app" field
-        // 1) 먼저 단순 "app" 라벨에서 추출 (microservices-demo 등)
+        // 1) 먼저 단순 "app" 라벨에서 추출 (bookinfo 등)
         rule {
           source_labels = ["__meta_kubernetes_pod_label_app"]
           action = "replace"

@@ -178,12 +178,12 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
-  microservices-demo:
+  bookinfo:
     enabled: true
-    name: microservices-demo
+    name: bookinfo
     namespace: argocd
     destination:
-      namespace: microservices-demo
+      namespace: bookinfo
     syncPolicy:
       managedNamespaceMetadata:
         labels:
@@ -191,7 +191,7 @@ applications:
     source:
       repoURL: https://github.com/kube-rca/helm-charts.git
       targetRevision: main
-      path: charts/microservices-demo
+      path: charts/bookinfo
       helm:
         valueFiles:
           - kube-rca-values.yaml
