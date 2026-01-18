@@ -1,0 +1,2 @@
+# Namespace where dashboards ConfigMaps will be created
+namespace: bookinfo

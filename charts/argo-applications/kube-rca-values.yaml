@@ -205,3 +205,13 @@ applications:
       repoURL: https://github.com/kube-rca/helm-charts.git
       targetRevision: main
       path: charts/load-generator
+  grafana-dashboards:
+    enabled: true
+    name: grafana-dashboards
+    namespace: argocd
+    destination:
+      namespace: bookinfo
+    source:
+      repoURL: https://github.com/kube-rca/helm-charts.git
+      targetRevision: main
+      path: charts/grafana-dashboards
