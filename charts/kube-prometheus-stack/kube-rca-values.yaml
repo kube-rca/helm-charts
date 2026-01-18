@@ -47,7 +47,10 @@ alertmanager:
             - alertname = "KubePodImagePullError"
         - receiver: 'kube-rca-backend'
           matchers:
-            - alertname = "IstioHighErrorRate"
+            - alertname = "IstioHigh5xxErrorRate"
+        - receiver: 'kube-rca-backend'
+          matchers:
+            - alertname = "IstioHigh4xxErrorRate"
     receivers:
       - name: 'null'
       - name: 'kube-rca-backend'
@@ -229,20 +232,42 @@ additionalPrometheusRulesMap:
           summary: Pod container ImagePullError
           description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) failed to pull image.'
 
-  kube-rca-istio-high-error-rate:
+  kube-rca-istio-high-5xx-error-rate:
     groups:
-    - name: kube-rca-istio-high-error-rate
+    - name: kube-rca-istio-high-5xx-error-rate
       rules:
-      - alert: IstioHighErrorRate
+      - alert: IstioHigh5xxErrorRate
         expr: |
           (
-            sum(rate(istio_requests_total{response_code=~"5.*", reporter="source", destination_service_namespace="bookinfo"}[5m])) by (source_workload, destination_service_name, destination_service_namespace)
+            sum(rate(istio_requests_total{response_code=~"5.*", reporter="source", destination_service_namespace="bookinfo"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
             /
-            sum(rate(istio_requests_total{reporter="source", destination_service_namespace="bookinfo"}[5m])) by (source_workload, destination_service_name, destination_service_namespace)
+            sum(rate(istio_requests_total{reporter="source", destination_service_namespace="bookinfo"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
           ) > 0.3
         for: 1m
         labels:
           severity: critical
+          namespace: '{{ $labels.destination_service_namespace }}'
+          workload: '{{ $labels.destination_workload }}'
         annotations:
-          summary: High error rate detected on Istio service
-          description: 'Service {{ $labels.destination_service_name }} in {{ $labels.destination_service_namespace }} has error rate {{ $value | humanizePercentage }} (source: {{ $labels.source_workload }})'
+          summary: High 5xx error rate detected on Istio service
+          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 5xx error rate {{ $value | humanizePercentage }} (source: {{ $labels.source_workload }})'
+
+  kube-rca-istio-high-4xx-error-rate:
+    groups:
+    - name: kube-rca-istio-high-4xx-error-rate
+      rules:
+      - alert: IstioHigh4xxErrorRate
+        expr: |
+          (
+            sum(rate(istio_requests_total{response_code=~"4.*", reporter="source", destination_service_namespace="bookinfo"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+            /
+            sum(rate(istio_requests_total{reporter="source", destination_service_namespace="bookinfo"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+          ) > 0.3
+        for: 1m
+        labels:
+          severity: warning
+          namespace: '{{ $labels.destination_service_namespace }}'
+          workload: '{{ $labels.destination_workload }}'
+        annotations:
+          summary: High 4xx error rate detected on Istio service
+          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 4xx error rate {{ $value | humanizePercentage }} (source: {{ $labels.source_workload }})'
