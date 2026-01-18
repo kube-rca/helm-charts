@@ -165,6 +165,19 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
+  kiali-operator:
+    enabled: true
+    name: kiali-operator
+    namespace: argocd
+    destination:
+      namespace: kiali-operator
+    source:
+      repoURL: https://github.com/kube-rca/helm-charts.git
+      targetRevision: main
+      path: charts/kiali-operator
+      helm:
+        valueFiles:
+          - kube-rca-values.yaml
   microservices-demo:
     enabled: true
     name: microservices-demo
