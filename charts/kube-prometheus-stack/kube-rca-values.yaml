@@ -45,6 +45,9 @@ alertmanager:
         - receiver: 'kube-rca-backend'
           matchers:
             - alertname = "KubePodImagePullError"
+        - receiver: 'kube-rca-backend'
+          matchers:
+            - alertname = "IstioHighErrorRate"
     receivers:
       - name: 'null'
       - name: 'kube-rca-backend'
@@ -225,3 +228,21 @@ additionalPrometheusRulesMap:
         annotations:
           summary: Pod container ImagePullError
           description: 'Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) failed to pull image.'
+
+  kube-rca-istio-high-error-rate:
+    groups:
+    - name: kube-rca-istio-high-error-rate
+      rules:
+      - alert: IstioHighErrorRate
+        expr: |
+          (
+            sum(rate(istio_requests_total{response_code=~"5.*", reporter="source", destination_service_namespace="bookinfo"}[5m])) by (source_workload, destination_service_name, destination_service_namespace)
+            /
+            sum(rate(istio_requests_total{reporter="source", destination_service_namespace="bookinfo"}[5m])) by (source_workload, destination_service_name, destination_service_namespace)
+          ) > 0.3
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: High error rate detected on Istio service
+          description: 'Service {{ $labels.destination_service_name }} in {{ $labels.destination_service_namespace }} has error rate {{ printf "%.1f" (mul $value 100) }}% (source: {{ $labels.source_workload }})'
