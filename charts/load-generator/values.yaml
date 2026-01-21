@@ -8,10 +8,10 @@ image:
 # Target configuration
 target:
   baseUrl: "http://productpage.bookinfo.svc.cluster.local:9080"
-  rps: 100
-  duration: "8760h"  # 1 year (effectively infinite)
-  preAllocatedVUs: 50
-  maxVUs: 250
+  rps: 50
+  duration: "4h"  # 4 hours (cycle via restart)
+  preAllocatedVUs: 20
+  maxVUs: 100
 
 resources:
   limits:
