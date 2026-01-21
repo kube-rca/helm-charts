@@ -10,3 +10,5 @@ ingress:
     - /
   pathType: Prefix
   tls: []
+
+resources: {}

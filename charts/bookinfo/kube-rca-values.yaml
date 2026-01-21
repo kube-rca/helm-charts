@@ -16,3 +16,23 @@ ingress:
     - secretName: kuberca-demo-tls
       hosts:
         - kuberca-demo.kkamji.net
+
+# Resource limits based on observed usage (kubectl top po)
+# load-generator is excluded.
+resources:
+  details:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  ratings:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+  reviews:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+  productpage:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
