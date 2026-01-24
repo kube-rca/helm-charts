@@ -16,6 +16,7 @@ target:
     ratings: 40
   rps: 100
   duration: "4h" # 4 hours (cycle via restart)
+  prefix: ""
   preAllocatedVUs: 40
   maxVUs: 200
 
