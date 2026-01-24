@@ -41,6 +41,16 @@ spec:
           env:
             - name: BASE_URL
               value: {{ .Values.target.baseUrl | quote }}
+            - name: DETAILS_BASE_URL
+              value: {{ .Values.target.detailsBaseUrl | quote }}
+            - name: RATINGS_BASE_URL
+              value: {{ .Values.target.ratingsBaseUrl | quote }}
+            - name: WEIGHT_PRODUCTPAGE
+              value: {{ .Values.target.weights.productpage | quote }}
+            - name: WEIGHT_DETAILS
+              value: {{ .Values.target.weights.details | quote }}
+            - name: WEIGHT_RATINGS
+              value: {{ .Values.target.weights.ratings | quote }}
             - name: TARGET_RPS
               value: {{ .Values.target.rps | quote }}
             - name: DURATION

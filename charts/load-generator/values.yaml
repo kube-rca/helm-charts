@@ -8,6 +8,12 @@ image:
 # Target configuration
 target:
   baseUrl: "http://productpage.bookinfo.svc.cluster.local:9080"
+  detailsBaseUrl: "http://details.bookinfo.svc.cluster.local:9080"
+  ratingsBaseUrl: "http://ratings.bookinfo.svc.cluster.local:9080"
+  weights:
+    productpage: 40
+    details: 30
+    ratings: 30
   rps: 100
   duration: "4h"  # 4 hours (cycle via restart)
   preAllocatedVUs: 40
