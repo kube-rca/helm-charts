@@ -41,7 +41,7 @@ data:
     const endpoints = [
       { name: 'productpage', url: `${PRODUCTPAGE_URL}/productpage`, weight: WEIGHT_PRODUCTPAGE },
       { name: 'details', url: `${DETAILS_URL}/details/0`, weight: WEIGHT_DETAILS },
-      { name: 'ratings', url: `${RATINGS_URL}/ratings`, weight: WEIGHT_RATINGS },
+      { name: 'ratings', url: `${RATINGS_URL}/ratings/0`, weight: WEIGHT_RATINGS },
     ];
 
     function selectEndpoint() {
