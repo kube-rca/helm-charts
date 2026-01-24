@@ -13,7 +13,6 @@ spec:
     metadata:
       labels:
         {{- include "load-generator.selectorLabels" . | nindent 8 }}
-        sidecar.istio.io/inject: "false"
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
@@ -55,6 +54,8 @@ spec:
               value: {{ .Values.target.rps | quote }}
             - name: DURATION
               value: {{ .Values.target.duration | quote }}
+            - name: PREFIX
+              value: {{ .Values.target.prefix | quote }}
             - name: PRE_ALLOCATED_VUS
               value: {{ .Values.target.preAllocatedVUs | quote }}
             - name: MAX_VUS
