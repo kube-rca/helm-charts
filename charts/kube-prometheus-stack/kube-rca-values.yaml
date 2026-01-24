@@ -233,38 +233,99 @@ additionalPrometheusRulesMap:
     groups:
     - name: kube-rca-istio-high-5xx-error-rate
       rules:
-      - alert: IstioHigh5xxErrorRate
+      - alert: IstioHigh5xxErrorRateWarning
         expr: |
           (
-            sum(rate(istio_requests_total{response_code=~"5.*", reporter="source", destination_service_namespace="bookinfo"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+            sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
             /
-            sum(rate(istio_requests_total{reporter="source", destination_service_namespace="bookinfo"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
-          ) > 0.3
-        for: 1m
-        labels:
-          severity: critical
-          namespace: '{{ $labels.destination_service_namespace }}'
-          workload: '{{ $labels.destination_workload }}'
-        annotations:
-          summary: High 5xx error rate detected on Istio service
-          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 5xx error rate {{ $value | humanizePercentage }} (source: {{ $labels.source_workload }})'
-
-  kube-rca-istio-high-4xx-error-rate:
-    groups:
-    - name: kube-rca-istio-high-4xx-error-rate
-      rules:
-      - alert: IstioHigh4xxErrorRate
-        expr: |
-          (
-            sum(rate(istio_requests_total{response_code=~"4.*", reporter="source", destination_service_namespace="bookinfo"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
-            /
-            sum(rate(istio_requests_total{reporter="source", destination_service_namespace="bookinfo"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
-          ) > 0.3
-        for: 1m
+            sum(rate(istio_requests_total{reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+          ) > 0.1
+        for: 3m
         labels:
           severity: warning
           namespace: '{{ $labels.destination_service_namespace }}'
           workload: '{{ $labels.destination_workload }}'
         annotations:
-          summary: High 4xx error rate detected on Istio service
-          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 4xx error rate {{ $value | humanizePercentage }} (source: {{ $labels.source_workload }})'
+          summary: High 5xx error rate detected on Istio service (warning)
+          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 5xx error rate {{ $value | humanizePercentage }} (threshold: 10%, source: {{ $labels.source_workload }})'
+      - alert: IstioHigh5xxErrorRateCritical
+        expr: |
+          (
+            sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+            /
+            sum(rate(istio_requests_total{reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+          ) > 0.3
+        for: 3m
+        labels:
+          severity: critical
+          namespace: '{{ $labels.destination_service_namespace }}'
+          workload: '{{ $labels.destination_workload }}'
+        annotations:
+          summary: High 5xx error rate detected on Istio service (critical)
+          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 5xx error rate {{ $value | humanizePercentage }} (threshold: 30%, source: {{ $labels.source_workload }})'
+
+  kube-rca-istio-high-4xx-error-rate:
+    groups:
+    - name: kube-rca-istio-high-4xx-error-rate
+      rules:
+      - alert: IstioHigh4xxErrorRateWarning
+        expr: |
+          (
+            sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+            /
+            sum(rate(istio_requests_total{reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+          ) > 0.1
+        for: 3m
+        labels:
+          severity: warning
+          namespace: '{{ $labels.destination_service_namespace }}'
+          workload: '{{ $labels.destination_workload }}'
+        annotations:
+          summary: High 4xx error rate detected on Istio service (warning)
+          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 4xx error rate {{ $value | humanizePercentage }} (threshold: 10%, source: {{ $labels.source_workload }})'
+      - alert: IstioHigh4xxErrorRateCritical
+        expr: |
+          (
+            sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+            /
+            sum(rate(istio_requests_total{reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+          ) > 0.3
+        for: 3m
+        labels:
+          severity: critical
+          namespace: '{{ $labels.destination_service_namespace }}'
+          workload: '{{ $labels.destination_workload }}'
+        annotations:
+          summary: High 4xx error rate detected on Istio service (critical)
+          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 4xx error rate {{ $value | humanizePercentage }} (threshold: 30%, source: {{ $labels.source_workload }})'
+
+  kube-rca-istio-high-latency-p95:
+    groups:
+    - name: kube-rca-istio-high-latency-p95
+      rules:
+      - alert: IstioHighP95LatencyWarning
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum(rate(istio_request_duration_milliseconds_bucket{reporter="destination"}[1m])) by (le, destination_service_namespace)
+          ) > 3000
+        for: 3m
+        labels:
+          severity: warning
+          namespace: '{{ $labels.destination_service_namespace }}'
+        annotations:
+          summary: Istio P95 latency is high (warning)
+          description: 'P95 latency in {{ $labels.destination_service_namespace }} is {{ $value }}ms (threshold: 3000ms)'
+      - alert: IstioHighP95LatencyCritical
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum(rate(istio_request_duration_milliseconds_bucket{reporter="destination"}[1m])) by (le, destination_service_namespace)
+          ) > 5000
+        for: 3m
+        labels:
+          severity: critical
+          namespace: '{{ $labels.destination_service_namespace }}'
+        annotations:
+          summary: Istio P95 latency is high (critical)
+          description: 'P95 latency in {{ $labels.destination_service_namespace }} is {{ $value }}ms (threshold: 5000ms)'
