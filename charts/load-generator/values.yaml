@@ -11,21 +11,21 @@ target:
   detailsBaseUrl: "http://details.bookinfo.svc.cluster.local:9080"
   ratingsBaseUrl: "http://ratings.bookinfo.svc.cluster.local:9080"
   weights:
-    productpage: 40
-    details: 30
-    ratings: 30
+    productpage: 20
+    details: 40
+    ratings: 40
   rps: 100
-  duration: "4h"  # 4 hours (cycle via restart)
+  duration: "4h" # 4 hours (cycle via restart)
   preAllocatedVUs: 40
   maxVUs: 200
 
 resources:
   limits:
-    cpu: "2"
+    cpu: "1"
     memory: 1Gi
   requests:
-    cpu: 500m
-    memory: 512Mi
+    cpu: 250m
+    memory: 256Mi
 
 nodeSelector: {}
 tolerations: []
