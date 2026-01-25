@@ -20,50 +20,49 @@ alertmanager:
   config:
     global:
       resolve_timeout: 5m
-    # Inhibition Rules: Critical 알람이 있을 때 동일 서비스의 Warning 억제
-    inhibit_rules:
-      - source_matchers:
-          - severity = critical
-        target_matchers:
-          - severity = warning
-        equal: ['alertname', 'namespace', 'destination_service_name']
-    route:
-      receiver: 'kube-rca-backend'
-      group_by: ['alertname', 'namespace', 'severity', 'workload', 'destination_service_name']
+      receiver: "kube-rca-backend"
+      group_by:
+        [
+          "alertname",
+          "namespace",
+          "severity",
+          "workload",
+          "destination_service_name",
+        ]
       group_wait: 10s
       group_interval: 5m
       repeat_interval: 4h
       routes:
         # Watchdog 예외처리
-        - receiver: 'null'
+        - receiver: "null"
           matchers:
             - alertname = "Watchdog"
         # Cilium 사용, kube-proxy 예외처리
-        - receiver: 'null'
+        - receiver: "null"
           matchers:
             - alertname = "KubeProxyDown"
         # API server 버전 낮음, 임시 예외처리
-        - receiver: 'null'
+        - receiver: "null"
           matchers:
             - alertname = "KubeVersionMismatch"
-        - receiver: 'kube-rca-backend'
+        - receiver: "kube-rca-backend"
           matchers:
             - alertname = "KubePodContainerTerminated"
-        - receiver: 'kube-rca-backend'
+        - receiver: "kube-rca-backend"
           matchers:
             - alertname = "KubePodImagePullError"
-        - receiver: 'kube-rca-backend'
+        - receiver: "kube-rca-backend"
           matchers:
             - alertname =~ "IstioHigh5xxErrorRate.*"
-        - receiver: 'kube-rca-backend'
+        - receiver: "kube-rca-backend"
           matchers:
             - alertname =~ "IstioHigh4xxErrorRate.*"
     receivers:
-      - name: 'null'
-      - name: 'kube-rca-backend'
+      - name: "null"
+      - name: "kube-rca-backend"
         webhook_configs:
           # 추후 svc, ns 이름 확정 후 수정 필요
-          - url: 'http://kube-rca-backend.kube-rca.svc:8080/webhook/alertmanager'
+          - url: "http://kube-rca-backend.kube-rca.svc:8080/webhook/alertmanager"
             send_resolved: true
 
 grafana:
@@ -80,24 +79,24 @@ grafana:
       cert-manager.io/cluster-issuer: letsencrypt-prod
       external-dns.alpha.kubernetes.io/target: 121.130.214.237
     hosts:
-    - grafana.kkamji.net
+      - grafana.kkamji.net
     path: /
     pathType: Prefix
     tls:
-    - secretName: grafana-tls
-      hosts:
-      - grafana.kkamji.net
+      - secretName: grafana-tls
+        hosts:
+          - grafana.kkamji.net
   additionalDataSources:
-  - name: Loki
-    type: loki
-    access: proxy
-    url: http://loki-gateway:80
-    jsonData:
-      timeout: 60
-      maxLines: 1000
-      httpHeaderName1: "X-Scope-OrgID"
-    secureJsonData:
-      httpHeaderValue1: "kube-rca"
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki-gateway:80
+      jsonData:
+        timeout: 60
+        maxLines: 1000
+        httpHeaderName1: "X-Scope-OrgID"
+      secureJsonData:
+        httpHeaderValue1: "kube-rca"
   sidecar:
     dashboards:
       folderAnnotation: "grafana_folder"
@@ -108,67 +107,78 @@ grafana:
 prometheus:
   prometheusSpec:
     additionalScrapeConfigs:
-    # Hubble & Cilium Metric 수집을 위한 설정
-    - job_name: 'kubernetes-pods' ## Cilium
-      kubernetes_sd_configs:
-      - role: pod
-      relabel_configs:
-      - source_labels: [ __meta_kubernetes_pod_annotation_prometheus_io_scrape ]
-        action: keep
-        regex: true
-      - source_labels: [ __address__, __meta_kubernetes_pod_annotation_prometheus_io_port ]
-        action: replace
-        regex: ([^:]+)(?::\d+)?;(\d+)
-        replacement: ${1}:${2}
-        target_label: __address__
+      # Hubble & Cilium Metric 수집을 위한 설정
+      - job_name: "kubernetes-pods" ## Cilium
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels:
+              [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels:
+              [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: ${1}:${2}
+            target_label: __address__
 
-    - job_name: 'kubernetes-endpoints' ## Hubble
-      scrape_interval: 30s
-      kubernetes_sd_configs:
-      - role: endpoints
-      relabel_configs:
-      - source_labels: [ __meta_kubernetes_service_annotation_prometheus_io_scrape ]
-        action: keep
-        regex: true
-      - source_labels: [ __address__, __meta_kubernetes_service_annotation_prometheus_io_port ]
-        action: replace
-        target_label: __address__
-        regex: (.+)(?::\d+);(\d+)
-        replacement: $1:$2
+      - job_name: "kubernetes-endpoints" ## Hubble
+        scrape_interval: 30s
+        kubernetes_sd_configs:
+          - role: endpoints
+        relabel_configs:
+          - source_labels:
+              [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels:
+              [
+                __address__,
+                __meta_kubernetes_service_annotation_prometheus_io_port,
+              ]
+            action: replace
+            target_label: __address__
+            regex: (.+)(?::\d+);(\d+)
+            replacement: $1:$2
 
-    # Istio Envoy sidecar metrics
-    - job_name: 'envoy-stats'
-      metrics_path: /stats/prometheus
-      kubernetes_sd_configs:
-      - role: pod
-      relabel_configs:
-      - source_labels: [__meta_kubernetes_pod_container_port_name]
-        action: keep
-        regex: '.*-envoy-prom'
-      - action: labelmap
-        regex: __meta_kubernetes_pod_label_(.+)
-      - source_labels: [__meta_kubernetes_namespace]
-        target_label: namespace
-      - source_labels: [__meta_kubernetes_pod_name]
-        target_label: pod
+      # Istio Envoy sidecar metrics
+      - job_name: "envoy-stats"
+        metrics_path: /stats/prometheus
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_container_port_name]
+            action: keep
+            regex: ".*-envoy-prom"
+          - action: labelmap
+            regex: __meta_kubernetes_pod_label_(.+)
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
 
-    # Istiod control plane metrics
-    - job_name: 'istiod'
-      kubernetes_sd_configs:
-      - role: endpoints
-        namespaces:
-          names:
-          - istio-system
-      relabel_configs:
-      - source_labels: [__meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
-        action: keep
-        regex: istiod;http-monitoring
-      - action: labelmap
-        regex: __meta_kubernetes_pod_label_(.+)
-      - source_labels: [__meta_kubernetes_namespace]
-        target_label: namespace
-      - source_labels: [__meta_kubernetes_pod_name]
-        target_label: pod
+      # Istiod control plane metrics
+      - job_name: "istiod"
+        kubernetes_sd_configs:
+          - role: endpoints
+            namespaces:
+              names:
+                - istio-system
+        relabel_configs:
+          - source_labels:
+              [
+                __meta_kubernetes_service_name,
+                __meta_kubernetes_endpoint_port_name,
+              ]
+            action: keep
+            regex: istiod;http-monitoring
+          - action: labelmap
+            regex: __meta_kubernetes_pod_label_(.+)
+          - source_labels: [__meta_kubernetes_namespace]
+            target_label: namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
 
     retention: 14d
   ingress:
@@ -182,13 +192,13 @@ prometheus:
       nginx.ingress.kubernetes.io/auth-realm: "Authentication Required" # 인증 프롬프트에 보내는 메시지
       external-dns.alpha.kubernetes.io/target: 121.130.214.237
     hosts:
-    - prometheus.kkamji.net
-    paths:
-    - /
-    tls:
-    - secretName: prometheus-tls
-      hosts:
       - prometheus.kkamji.net
+    paths:
+      - /
+    tls:
+      - secretName: prometheus-tls
+        hosts:
+          - prometheus.kkamji.net
 
 defaultRules:
   disabled:
@@ -197,142 +207,142 @@ defaultRules:
 additionalPrometheusRulesMap:
   kube-rca-container-terminated:
     groups:
-    - name: kube-rca-container-terminated
-      rules:
-      - alert: KubePodContainerTerminated
-        expr: |
-          (
-            increase(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[5m]) > 0
-            and on (namespace, pod, container)
-            kube_pod_container_status_last_terminated_exitcode{job="kube-state-metrics"} != 0
-          )
-          * on (namespace, pod, container) group_left(reason)
-          kube_pod_container_status_last_terminated_reason{job="kube-state-metrics"}
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: Pod container terminated abnormally
-          description: |
-            Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) terminated abnormally.
-            Reason: {{ $labels.reason }}
+      - name: kube-rca-container-terminated
+        rules:
+          - alert: KubePodContainerTerminated
+            expr: |
+              (
+                increase(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[5m]) > 0
+                and on (namespace, pod, container)
+                kube_pod_container_status_last_terminated_exitcode{job="kube-state-metrics"} != 0
+              )
+              * on (namespace, pod, container) group_left(reason)
+              kube_pod_container_status_last_terminated_reason{job="kube-state-metrics"}
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: Pod container terminated abnormally
+              description: |
+                Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) terminated abnormally.
+                Reason: {{ $labels.reason }}
 
   kube-rca-image-pull-error:
     groups:
-    - name: kube-rca-image-pull-error
-      rules:
-      - alert: KubePodImagePullError
-        expr: |
-          kube_pod_container_status_waiting_reason{
-            reason="ImagePullBackOff",
-            job="kube-state-metrics"
-          } == 1
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: Pod failed to pull image
-          description: |
-            Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) failed to pull image.
-            Reason: {{ $labels.reason }}
+      - name: kube-rca-image-pull-error
+        rules:
+          - alert: KubePodImagePullError
+            expr: |
+              kube_pod_container_status_waiting_reason{
+                reason="ImagePullBackOff",
+                job="kube-state-metrics"
+              } == 1
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: Pod failed to pull image
+              description: |
+                Pod {{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) failed to pull image.
+                Reason: {{ $labels.reason }}
 
   kube-rca-istio-high-5xx-error-rate:
     groups:
-    - name: kube-rca-istio-high-5xx-error-rate
-      rules:
-      - alert: IstioHigh5xxErrorRateWarning
-        expr: |
-          (
-            sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
-            /
-            sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
-          ) > 0.1
-        for: 3m
-        labels:
-          severity: warning
-          namespace: '{{ $labels.destination_service_namespace }}'
-          workload: '{{ $labels.destination_workload }}'
-        annotations:
-          summary: High 5xx error rate detected on Istio service (warning)
-          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 5xx error rate {{ $value | humanizePercentage }} (threshold: 10%)'
-      - alert: IstioHigh5xxErrorRateCritical
-        expr: |
-          (
-            sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
-            /
-            sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
-          ) > 0.3
-        for: 3m
-        labels:
-          severity: critical
-          namespace: '{{ $labels.destination_service_namespace }}'
-          workload: '{{ $labels.destination_workload }}'
-        annotations:
-          summary: High 5xx error rate detected on Istio service (critical)
-          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 5xx error rate {{ $value | humanizePercentage }} (threshold: 30%)'
+      - name: kube-rca-istio-high-5xx-error-rate
+        rules:
+          - alert: IstioHigh5xxErrorRateWarning
+            expr: |
+              (
+                sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+                /
+                sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+              ) > 0.1
+            for: 3m
+            labels:
+              severity: warning
+              namespace: "{{ $labels.destination_service_namespace }}"
+              workload: "{{ $labels.destination_workload }}"
+            annotations:
+              summary: High 5xx error rate detected on Istio service (warning)
+              description: "Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 5xx error rate {{ $value | humanizePercentage }} (threshold: 10%)"
+          - alert: IstioHigh5xxErrorRateCritical
+            expr: |
+              (
+                sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+                /
+                sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+              ) > 0.3
+            for: 3m
+            labels:
+              severity: critical
+              namespace: "{{ $labels.destination_service_namespace }}"
+              workload: "{{ $labels.destination_workload }}"
+            annotations:
+              summary: High 5xx error rate detected on Istio service (critical)
+              description: "Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 5xx error rate {{ $value | humanizePercentage }} (threshold: 30%)"
 
   kube-rca-istio-high-4xx-error-rate:
     groups:
-    - name: kube-rca-istio-high-4xx-error-rate
-      rules:
-      - alert: IstioHigh4xxErrorRateWarning
-        expr: |
-          (
-            sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
-            /
-            sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
-          ) > 0.1
-        for: 3m
-        labels:
-          severity: warning
-          namespace: '{{ $labels.destination_service_namespace }}'
-          workload: '{{ $labels.destination_workload }}'
-        annotations:
-          summary: High 4xx error rate detected on Istio service (warning)
-          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 4xx error rate {{ $value | humanizePercentage }} (threshold: 10%)'
-      - alert: IstioHigh4xxErrorRateCritical
-        expr: |
-          (
-            sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
-            /
-            sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
-          ) > 0.3
-        for: 3m
-        labels:
-          severity: critical
-          namespace: '{{ $labels.destination_service_namespace }}'
-          workload: '{{ $labels.destination_workload }}'
-        annotations:
-          summary: High 4xx error rate detected on Istio service (critical)
-          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 4xx error rate {{ $value | humanizePercentage }} (threshold: 30%)'
+      - name: kube-rca-istio-high-4xx-error-rate
+        rules:
+          - alert: IstioHigh4xxErrorRateWarning
+            expr: |
+              (
+                sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+                /
+                sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+              ) > 0.1
+            for: 3m
+            labels:
+              severity: warning
+              namespace: "{{ $labels.destination_service_namespace }}"
+              workload: "{{ $labels.destination_workload }}"
+            annotations:
+              summary: High 4xx error rate detected on Istio service (warning)
+              description: "Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 4xx error rate {{ $value | humanizePercentage }} (threshold: 10%)"
+          - alert: IstioHigh4xxErrorRateCritical
+            expr: |
+              (
+                sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+                /
+                sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+              ) > 0.3
+            for: 3m
+            labels:
+              severity: critical
+              namespace: "{{ $labels.destination_service_namespace }}"
+              workload: "{{ $labels.destination_workload }}"
+            annotations:
+              summary: High 4xx error rate detected on Istio service (critical)
+              description: "Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 4xx error rate {{ $value | humanizePercentage }} (threshold: 30%)"
 
   kube-rca-istio-high-latency-p95:
     groups:
-    - name: kube-rca-istio-high-latency-p95
-      rules:
-      - alert: IstioHighP95LatencyWarning
-        expr: |
-          histogram_quantile(
-            0.95,
-            sum(rate(istio_request_duration_milliseconds_bucket{reporter="destination"}[1m])) by (le, destination_service_namespace)
-          ) > 3000
-        for: 3m
-        labels:
-          severity: warning
-          namespace: '{{ $labels.destination_service_namespace }}'
-        annotations:
-          summary: Istio P95 latency is high (warning)
-          description: 'P95 latency in {{ $labels.destination_service_namespace }} is {{ $value }}ms (threshold: 3000ms)'
-      - alert: IstioHighP95LatencyCritical
-        expr: |
-          histogram_quantile(
-            0.95,
-            sum(rate(istio_request_duration_milliseconds_bucket{reporter="destination"}[1m])) by (le, destination_service_namespace)
-          ) > 5000
-        for: 3m
-        labels:
-          severity: critical
-          namespace: '{{ $labels.destination_service_namespace }}'
-        annotations:
-          summary: Istio P95 latency is high (critical)
-          description: 'P95 latency in {{ $labels.destination_service_namespace }} is {{ $value }}ms (threshold: 5000ms)'
+      - name: kube-rca-istio-high-latency-p95
+        rules:
+          - alert: IstioHighP95LatencyWarning
+            expr: |
+              histogram_quantile(
+                0.95,
+                sum(rate(istio_request_duration_milliseconds_bucket{reporter="destination"}[1m])) by (le, destination_service_namespace)
+              ) > 3000
+            for: 3m
+            labels:
+              severity: warning
+              namespace: "{{ $labels.destination_service_namespace }}"
+            annotations:
+              summary: Istio P95 latency is high (warning)
+              description: "P95 latency in {{ $labels.destination_service_namespace }} is {{ $value }}ms (threshold: 3000ms)"
+          - alert: IstioHighP95LatencyCritical
+            expr: |
+              histogram_quantile(
+                0.95,
+                sum(rate(istio_request_duration_milliseconds_bucket{reporter="destination"}[1m])) by (le, destination_service_namespace)
+              ) > 5000
+            for: 3m
+            labels:
+              severity: critical
+              namespace: "{{ $labels.destination_service_namespace }}"
+            annotations:
+              summary: Istio P95 latency is high (critical)
+              description: "P95 latency in {{ $labels.destination_service_namespace }} is {{ $value }}ms (threshold: 5000ms)"
