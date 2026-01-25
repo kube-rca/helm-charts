@@ -20,9 +20,16 @@ alertmanager:
   config:
     global:
       resolve_timeout: 5m
+    # Inhibition Rules: Critical 알람이 있을 때 동일 서비스의 Warning 억제
+    inhibit_rules:
+      - source_matchers:
+          - severity = critical
+        target_matchers:
+          - severity = warning
+        equal: ['alertname', 'namespace', 'destination_service_name']
     route:
       receiver: 'kube-rca-backend'
-      group_by: ['alertname', 'namespace', 'severity', 'workload']
+      group_by: ['alertname', 'namespace', 'severity', 'workload', 'destination_service_name']
       group_wait: 10s
       group_interval: 5m
       repeat_interval: 4h
@@ -47,10 +54,10 @@ alertmanager:
             - alertname = "KubePodImagePullError"
         - receiver: 'kube-rca-backend'
           matchers:
-            - alertname = "IstioHigh5xxErrorRate"
+            - alertname =~ "IstioHigh5xxErrorRate.*"
         - receiver: 'kube-rca-backend'
           matchers:
-            - alertname = "IstioHigh4xxErrorRate"
+            - alertname =~ "IstioHigh4xxErrorRate.*"
     receivers:
       - name: 'null'
       - name: 'kube-rca-backend'
