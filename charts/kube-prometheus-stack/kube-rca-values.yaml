@@ -22,9 +22,9 @@ alertmanager:
       resolve_timeout: 5m
     route:
       receiver: 'kube-rca-backend'
-      group_by: ['alertname', 'namespace', 'severity']
+      group_by: ['alertname', 'namespace', 'severity', 'workload']
       group_wait: 10s
-      group_interval: 1m
+      group_interval: 5m
       repeat_interval: 4h
       routes:
         # Watchdog 예외처리
@@ -236,9 +236,9 @@ additionalPrometheusRulesMap:
       - alert: IstioHigh5xxErrorRateWarning
         expr: |
           (
-            sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+            sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
             /
-            sum(rate(istio_requests_total{reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+            sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
           ) > 0.1
         for: 3m
         labels:
@@ -247,13 +247,13 @@ additionalPrometheusRulesMap:
           workload: '{{ $labels.destination_workload }}'
         annotations:
           summary: High 5xx error rate detected on Istio service (warning)
-          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 5xx error rate {{ $value | humanizePercentage }} (threshold: 10%, source: {{ $labels.source_workload }})'
+          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 5xx error rate {{ $value | humanizePercentage }} (threshold: 10%)'
       - alert: IstioHigh5xxErrorRateCritical
         expr: |
           (
-            sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+            sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
             /
-            sum(rate(istio_requests_total{reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+            sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
           ) > 0.3
         for: 3m
         labels:
@@ -262,7 +262,7 @@ additionalPrometheusRulesMap:
           workload: '{{ $labels.destination_workload }}'
         annotations:
           summary: High 5xx error rate detected on Istio service (critical)
-          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 5xx error rate {{ $value | humanizePercentage }} (threshold: 30%, source: {{ $labels.source_workload }})'
+          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 5xx error rate {{ $value | humanizePercentage }} (threshold: 30%)'
 
   kube-rca-istio-high-4xx-error-rate:
     groups:
@@ -271,9 +271,9 @@ additionalPrometheusRulesMap:
       - alert: IstioHigh4xxErrorRateWarning
         expr: |
           (
-            sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+            sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
             /
-            sum(rate(istio_requests_total{reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+            sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
           ) > 0.1
         for: 3m
         labels:
@@ -282,13 +282,13 @@ additionalPrometheusRulesMap:
           workload: '{{ $labels.destination_workload }}'
         annotations:
           summary: High 4xx error rate detected on Istio service (warning)
-          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 4xx error rate {{ $value | humanizePercentage }} (threshold: 10%, source: {{ $labels.source_workload }})'
+          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 4xx error rate {{ $value | humanizePercentage }} (threshold: 10%)'
       - alert: IstioHigh4xxErrorRateCritical
         expr: |
           (
-            sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+            sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
             /
-            sum(rate(istio_requests_total{reporter="source"}[5m])) by (source_workload, destination_workload, destination_version, destination_service_name, destination_service_namespace)
+            sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
           ) > 0.3
         for: 3m
         labels:
@@ -297,7 +297,7 @@ additionalPrometheusRulesMap:
           workload: '{{ $labels.destination_workload }}'
         annotations:
           summary: High 4xx error rate detected on Istio service (critical)
-          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 4xx error rate {{ $value | humanizePercentage }} (threshold: 30%, source: {{ $labels.source_workload }})'
+          description: 'Service {{ $labels.destination_service_name }} (workload: {{ $labels.destination_workload }}, version: {{ $labels.destination_version }}) in {{ $labels.destination_service_namespace }} has 4xx error rate {{ $value | humanizePercentage }} (threshold: 30%)'
 
   kube-rca-istio-high-latency-p95:
     groups:
