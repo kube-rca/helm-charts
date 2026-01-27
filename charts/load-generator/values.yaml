@@ -14,11 +14,11 @@ target:
     productpage: 20
     details: 40
     ratings: 40
-  rps: 50
+  rps: 75
   duration: "4h" # 4 hours (cycle via restart)
   prefix: ""
-  preAllocatedVUs: 40
-  maxVUs: 200
+  preAllocatedVUs: 60
+  maxVUs: 300
 
 resources:
   limits:
