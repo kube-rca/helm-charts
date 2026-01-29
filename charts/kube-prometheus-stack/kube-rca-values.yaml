@@ -108,7 +108,7 @@ grafana:
         manageAlerts: true
         allowAsRecordingRulesTarget: true
         prometheusType: Mimir
-        prometheusVersion: "3.0.0"
+        prometheusVersion: "> 2.9.x"
         cacheLevel: "Low"
         timeInterval: 15s
         queryTimeout: 60s
