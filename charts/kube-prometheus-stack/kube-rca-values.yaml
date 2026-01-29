@@ -102,7 +102,7 @@ grafana:
       type: prometheus
       url: http://test-mimir/prometheus
       access: proxy
-      isDefault: true
+      isDefault: false
       jsonData:
         httpMethod: POST
         manageAlerts: true
