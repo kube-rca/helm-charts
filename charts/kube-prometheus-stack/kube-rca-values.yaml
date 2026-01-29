@@ -98,23 +98,6 @@ grafana:
         httpHeaderName1: "X-Scope-OrgID"
       secureJsonData:
         httpHeaderValue1: "kube-rca"
-    - name: mimir-test
-      type: prometheus
-      url: http://test-mimir/prometheus
-      access: proxy
-      isDefault: false
-      jsonData:
-        httpMethod: POST
-        manageAlerts: true
-        allowAsRecordingRulesTarget: true
-        prometheusType: Mimir
-        prometheusVersion: "2.9.1"
-        cacheLevel: "Low"
-        timeInterval: 15s
-        queryTimeout: 60s
-        httpHeaderName1: X-Scope-OrgID
-      secureJsonData:
-        httpHeaderValue1: prod
   sidecar:
     dashboards:
       folderAnnotation: "grafana_folder"
