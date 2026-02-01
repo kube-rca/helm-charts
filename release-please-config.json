@@ -1,0 +1,8 @@
+{
+  "packages": {
+    "charts/kube-rca": {
+      "release-type": "helm",
+      "package-name": "kube-rca"
+    }
+  }
+}

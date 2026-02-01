@@ -1,0 +1,30 @@
+name: Publish Helm Chart (kube-rca)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - name: Configure AWS credentials (OIDC assume role)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ap-northeast-2
+          role-session-name: github-actions-helm
+      - name: Login to Amazon ECR Public (OCI)
+        run: |
+          aws ecr-public get-login-password --region us-east-1 | helm registry login --username AWS --password-stdin public.ecr.aws
+      - name: Package chart
+        run: helm package charts/kube-rca
+      - name: Push chart
+        run: helm push kube-rca-*.tgz oci://public.ecr.aws/r5b7j2e4/kube-rca-ecr

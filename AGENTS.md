@@ -69,7 +69,7 @@ Collection of Helm charts under `charts/` for Kubernetes deployments.
 | Lint chart (charts/kube-rca) | `helm lint charts/kube-rca` |
 | Generate docs (charts/kube-rca) | `cd charts/kube-rca && helm-docs` |
 | Render templates (charts/kube-rca) | `helm template kube-rca charts/kube-rca > /tmp/kube-rca-manifest.yaml` |
-| Diff against cluster | `<!-- TODO: verify helm diff command -->` |
+| Diff against cluster | `kubectl diff -f /tmp/kube-rca-manifest.yaml` |
 
 ---
 
@@ -81,8 +81,14 @@ helm-charts/
 │   └── kube-rca/           # Main chart
 │       ├── values.yaml     # Default values
 │       └── kube-rca-values.yaml # Custom values for KubeRCA
+├── .github/workflows/      # CI/CD pipelines
+│   ├── ci-pr.yaml
+│   ├── publish-chart.yaml
+│   └── release-please.yaml
 ├── .pre-commit-config.yaml # Pre-commit hooks config
+├── .release-please-manifest.json
 ├── LAST_AGENT_RUN.md       # Agent run log
+├── release-please-config.json
 └── README.md               # Top-level note
 ```
 
@@ -94,7 +100,7 @@ helm-charts/
 - Use `charts/<chart>` boundaries; avoid cross-chart coupling.
 - Document values changes in the chart's README when modifying defaults.
 - Verification (charts/kube-rca): `helm lint charts/kube-rca`, `helm template kube-rca charts/kube-rca > /tmp/kube-rca-manifest.yaml`, and `cd charts/kube-rca && helm-docs`
-- Other charts: `<!-- TODO: verify chart-specific helm lint/template commands -->`
+- Other charts: `helm lint charts/<chart>` 및 `helm template <chart> charts/<chart>` (필요 시 values 파일 지정)
 
 ### 5.2 Kubernetes
 - Always verify context/namespace before any cluster interaction.
@@ -115,11 +121,27 @@ helm-charts/
 
 ## 6. CI/CD
 
-No CI/CD configuration detected.
+**GitHub Actions** (`.github/workflows/ci-pr.yaml`)
+- `pull_request` 트리거에서 `helm lint charts/kube-rca` 수행
+
+**GitHub Actions** (`.github/workflows/release-please.yaml`)
+- release-please로 태그/CHANGELOG/Release Notes 자동 생성
+
+**GitHub Actions** (`.github/workflows/publish-chart.yaml`)
+- 릴리즈 퍼블리시 시 Helm 차트를 Public ECR(OCI)로 푸시
 
 ---
 
-## 7. Commit Rules
+## 7. Release Management
+
+- 버전 기준: `charts/kube-rca/Chart.yaml`
+- 태그 포맷: `vX.Y.Z`
+- 릴리즈 자동화: release-please
+- Helm OCI 저장소: `public.ecr.aws/r5b7j2e4/kube-rca-ecr`
+
+---
+
+## 8. Commit Rules
 
 - Conventional Commits: `type(scope): summary`
 - Types: `feat`, `fix`, `refac`, `docs`, `chore`, `test`, `perf`
@@ -128,7 +150,7 @@ No CI/CD configuration detected.
 
 ---
 
-## 8. Verification Checklist
+## 9. Verification Checklist
 
 Before completing work:
 - [ ] Requirements satisfied exactly?
