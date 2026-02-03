@@ -46,19 +46,6 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
-  postgresql:
-    enabled: true
-    name: postgresql
-    namespace: argocd
-    destination:
-      namespace: kube-rca
-    source:
-      repoURL: https://github.com/kube-rca/helm-charts.git
-      targetRevision: main
-      path: charts/postgresql
-      helm:
-        valueFiles:
-          - kube-rca-values.yaml
   kube-rca:
     enabled: true
     name: kube-rca
