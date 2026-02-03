@@ -104,6 +104,38 @@ applications:
     namespace: argocd
     destination:
       namespace: chaos-mesh
+    ignoreDifferences:
+      - group: admissionregistration.k8s.io
+        kind: MutatingWebhookConfiguration
+        name: chaos-mesh-mutation
+        jqPathExpressions:
+          - .webhooks[].clientConfig.caBundle
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+        name: chaos-mesh-validation
+        jqPathExpressions:
+          - .webhooks[].clientConfig.caBundle
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+        name: chaos-mesh-validation-auth
+        jqPathExpressions:
+          - .webhooks[].clientConfig.caBundle
+      - kind: Secret
+        name: chaos-mesh-webhook-certs
+        jsonPointers:
+          - /data
+      - kind: Secret
+        name: chaos-mesh-daemon-certs
+        jsonPointers:
+          - /data
+      - kind: Secret
+        name: chaos-mesh-daemon-client-certs
+        jsonPointers:
+          - /data
+      - kind: Secret
+        name: chaos-mesh-chaosd-client-certs
+        jsonPointers:
+          - /data
     source:
       repoURL: https://github.com/kube-rca/helm-charts.git
       targetRevision: main
