@@ -102,7 +102,7 @@ grafana:
       uid: tempo
       type: tempo
       access: proxy
-      url: http://tempo.monitoring.svc.cluster.local:3100
+      url: http://tempo.monitoring.svc.cluster.local:3200
       jsonData:
         httpMethod: GET
         serviceMap:
