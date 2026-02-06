@@ -1,0 +1,14 @@
+image:
+  repository: grafana/tempo
+  tag: "2.7.2"
+
+storage:
+  blockRetention: 48h
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 1Gi

@@ -1,0 +1,28 @@
+# Default values for tempo.
+
+replicaCount: 1
+
+image:
+  repository: grafana/tempo
+  tag: "2.7.2"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3100
+  otlpGrpcPort: 4317
+  otlpHttpPort: 4318
+
+storage:
+  tracesPath: /var/tempo/traces
+  walPath: /var/tempo/wal
+  blockRetention: 24h
+
+limits:
+  maxTracesPerUser: 10000
+
+resources: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

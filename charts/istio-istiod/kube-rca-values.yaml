@@ -13,3 +13,16 @@ global:
 base:
   enableCRDTemplates: true
   enableIstioConfigCRDs: true
+
+meshConfig:
+  extensionProviders:
+    - name: otel-tracing
+      opentelemetry:
+        service: tempo.monitoring.svc.cluster.local
+        port: 4317
+  defaultProviders:
+    tracing:
+      - otel-tracing
+
+pilot:
+  traceSampling: 100
