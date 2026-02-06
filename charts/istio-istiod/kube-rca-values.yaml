@@ -1,20 +1,32 @@
-# Istio istiod values
-# istiod 네임스페이스 리소스 설정
-
-defaultRevision: default
+# Istio istiod values for kube-rca
+# Upstream chart baseline: istio/istiod 1.28.2
 
 global:
   istioNamespace: istio-system
-  # resourceScope를 분리하여 ArgoCD shared resource 충돌 방지
-  # istio-base: cluster (CRDs, ValidatingWebhook)
-  # istio-istiod: namespace (ServiceAccount)
+  # Split ownership with istio-base app to avoid ArgoCD shared-resource conflicts.
+  # istio-base: cluster scope (CRDs / cluster-scoped resources)
+  # istio-istiod: namespace scope (deployment / configmaps / serviceaccounts)
   resourceScope: namespace
 
-base:
-  enableCRDTemplates: true
-  enableIstioConfigCRDs: true
+  # Keep proxy tracer disabled to rely on meshConfig extensionProviders.
+  proxy:
+    tracer: none
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 512Mi
 
+# Pilot tracing env (PILOT_TRACE_SAMPLING)
+traceSampling: 100
+
+# Mesh config used to generate istio configmap.
 meshConfig:
+  defaultConfig:
+    tracing:
+      sampling: 100.0
   extensionProviders:
     - name: otel-tracing
       opentelemetry:
@@ -23,6 +35,3 @@ meshConfig:
   defaultProviders:
     tracing:
       - otel-tracing
-
-pilot:
-  traceSampling: 100

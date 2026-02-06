@@ -1,6 +1,6 @@
-# Istio base Helm Chart
+# Istiod Helm Chart
 
-This chart installs resources shared by all Istio revisions. This includes Istio CRDs.
+This chart installs an Istiod deployment.
 
 ## Setup Repo Info
 
@@ -13,11 +13,29 @@ _See [helm repo](https://helm.sh/docs/helm/helm_repo/) for command documentation
 
 ## Installing the Chart
 
-To install the chart with the release name `istio-base`:
+Before installing, ensure CRDs are installed in the cluster (from the `istio/base` chart).
+
+To install the chart with the release name `istiod`:
 
 ```console
 kubectl create namespace istio-system
-helm install istio-base istio/base -n istio-system
+helm install istiod istio/istiod --namespace istio-system
+```
+
+## Uninstalling the Chart
+
+To uninstall/delete the `istiod` deployment:
+
+```console
+helm delete istiod --namespace istio-system
+```
+
+## Configuration
+
+To view supported configuration options and documentation, run:
+
+```console
+helm show values istio/istiod
 ```
 
 ### Profiles
@@ -33,3 +51,23 @@ Explicitly set values have highest priority, then profile settings, then chart d
 As an implementation detail of profiles, the default values for the chart are all nested under `defaults`.
 When configuring the chart, you should not include this.
 That is, `--set some.field=true` should be passed, not `--set defaults.some.field=true`.
+
+### Examples
+
+#### Configuring mesh configuration settings
+
+Any [Mesh Config](https://istio.io/latest/docs/reference/config/istio.mesh.v1alpha1/) options can be configured like below:
+
+```yaml
+meshConfig:
+  accessLogFile: /dev/stdout
+```
+
+#### Revisions
+
+Control plane revisions allow deploying multiple versions of the control plane in the same cluster.
+This allows safe [canary upgrades](https://istio.io/latest/docs/setup/upgrade/canary/)
+
+```yaml
+revision: my-revision-name
+```
