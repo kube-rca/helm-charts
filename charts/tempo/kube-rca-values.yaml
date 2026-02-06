@@ -2,6 +2,25 @@ tempo:
   tag: "2.9.0"
   reportingEnabled: false
   retention: 48h
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
+    processor:
+      local_blocks:
+        flush_to_storage: true
+      service_graphs: {}
+      span_metrics: {}
+    storage:
+      path: "/var/tempo/generator"
+    traces_storage:
+      path: "/var/tempo/generator/traces"
+  overrides:
+    defaults:
+      metrics_generator:
+        processors:
+          - local-blocks
+          - service-graphs
+          - span-metrics
   resources:
     requests:
       cpu: 100m
