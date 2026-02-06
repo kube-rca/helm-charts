@@ -98,6 +98,19 @@ applications:
       helm:
         valueFiles:
           - kube-rca-values.yaml
+  tempo:
+    enabled: true
+    name: tempo
+    namespace: argocd
+    destination:
+      namespace: monitoring
+    source:
+      repoURL: https://github.com/kube-rca/helm-charts.git
+      targetRevision: main
+      path: charts/tempo
+      helm:
+        valueFiles:
+          - kube-rca-values.yaml
   chaos-mesh:
     enabled: true
     name: chaos-mesh

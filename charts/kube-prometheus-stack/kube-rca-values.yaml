@@ -98,7 +98,21 @@ grafana:
         httpHeaderName1: "X-Scope-OrgID"
       secureJsonData:
         httpHeaderValue1: "kube-rca"
+    - name: Tempo
+      uid: tempo
+      type: tempo
+      access: proxy
+      url: http://tempo.monitoring.svc.cluster.local:3200
+      jsonData:
+        httpMethod: GET
+        serviceMap:
+          datasourceUid: Prometheus
   sidecar:
+    datasources:
+      exemplarTraceIdDestinations:
+        datasourceUid: tempo
+        traceIdLabelName: trace_id
+        urlDisplayLabel: View Trace
     dashboards:
       folderAnnotation: "grafana_folder"
       defaultFolderName: "Default Dashboard"

@@ -1,0 +1,14 @@
+tempo:
+  tag: "2.9.0"
+  reportingEnabled: false
+  retention: 48h
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+persistence:
+  enabled: false
