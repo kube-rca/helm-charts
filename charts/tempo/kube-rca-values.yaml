@@ -13,6 +13,9 @@ tempo:
       span_metrics: {}
     storage:
       path: "/var/tempo/generator"
+      remote_write:
+        - url: "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
+          send_exemplars: false
     traces_storage:
       path: "/var/tempo/generator/traces"
   overrides:
