@@ -121,6 +121,7 @@ grafana:
 
 prometheus:
   prometheusSpec:
+    enableRemoteWriteReceiver: true
     additionalScrapeConfigs:
       # Hubble & Cilium Metric 수집을 위한 설정
       - job_name: "kubernetes-pods" ## Cilium

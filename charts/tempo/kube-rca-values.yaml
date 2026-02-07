@@ -2,6 +2,7 @@ tempo:
   tag: "2.9.0"
   reportingEnabled: false
   retention: 48h
+  memBallastSizeMbs: 256
   metricsGenerator:
     enabled: true
     remoteWriteUrl: "http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
@@ -24,10 +25,10 @@ tempo:
   resources:
     requests:
       cpu: 100m
-      memory: 256Mi
+      memory: 512Mi
     limits:
       cpu: 500m
-      memory: 1Gi
+      memory: 2Gi
 
 persistence:
   enabled: false
