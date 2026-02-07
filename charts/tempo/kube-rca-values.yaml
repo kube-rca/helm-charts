@@ -9,7 +9,6 @@ tempo:
     processor:
       local_blocks:
         flush_to_storage: true
-      service_graphs: {}
       span_metrics: {}
     storage:
       path: "/var/tempo/generator"
@@ -23,13 +22,12 @@ tempo:
       metrics_generator:
         processors:
           - local-blocks
-          - service-graphs
           - span-metrics
   querier:
     max_concurrent_queries: 10
   queryFrontend:
     search:
-      concurrent_jobs: 300
+      concurrent_jobs: 120
   resources:
     requests:
       cpu: 250m
