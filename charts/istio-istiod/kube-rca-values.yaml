@@ -33,5 +33,7 @@ meshConfig:
         service: tempo.monitoring.svc.cluster.local
         port: 4317
   defaultProviders:
+    metrics:
+      - prometheus
     tracing:
       - otel-tracing
