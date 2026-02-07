@@ -1,5 +1,11 @@
 # kube-rca helm-charts
 
+## Layout Note
+
+- Monorepo worktree path: `helm-charts/main`
+- Main application chart: `charts/kube-rca`
+- Current auxiliary charts include `postgresql_old` and `tempo`
+
 ## Merge Policy (release-please)
 
 To prevent duplicate CHANGELOG entries, avoid merge commits in this repo. Use `Squash and merge` (preferred) or `Rebase and merge` so release-please sees a single conventional commit per PR.
