@@ -22,13 +22,18 @@ tempo:
           - local-blocks
           - service-graphs
           - span-metrics
+  querier:
+    max_concurrent_queries: 10
+  queryFrontend:
+    search:
+      concurrent_jobs: 300
   resources:
     requests:
-      cpu: 100m
-      memory: 512Mi
+      cpu: 250m
+      memory: 1Gi
     limits:
-      cpu: 500m
-      memory: 2Gi
+      cpu: 1000m
+      memory: 4Gi
 
 persistence:
   enabled: false
