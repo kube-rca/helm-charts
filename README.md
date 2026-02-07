@@ -1,10 +1,6 @@
 # kube-rca helm-charts
 
-## Layout Note
-
-- Monorepo worktree path: `helm-charts/main`
-- Main application chart: `charts/kube-rca`
-- Current auxiliary charts include `postgresql_old` and `tempo`
+Helm chart collection for deploying KubeRCA components and supporting infrastructure.
 
 ## Merge Policy (release-please)
 
