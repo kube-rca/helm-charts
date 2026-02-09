@@ -23,6 +23,7 @@ tempo:
         processors:
           - local-blocks
           - span-metrics
+          - service-graphs
   querier:
     max_concurrent_queries: 10
   queryFrontend:
