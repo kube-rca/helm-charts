@@ -31,4 +31,4 @@ jobs:
       - name: Package chart
         run: helm package charts/kube-rca
       - name: Push chart
-        run: helm push kube-rca-*.tgz oci://public.ecr.aws/r5b7j2e4/kube-rca-ecr
+        run: helm push kube-rca-*.tgz oci://public.ecr.aws/r5b7j2e4/kube-rca-ecr/charts
