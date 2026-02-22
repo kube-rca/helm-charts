@@ -8,7 +8,7 @@ repos:
           - -c
           - |
               command -v helm >/dev/null 2>&1 || { echo "pre-commit: helm not found. Install Helm to lint charts." >&2; exit 1; }
-              helm lint charts/kube-rca
+              helm lint --strict charts/kube-rca
         language: system
         files: ^charts/kube-rca/
         pass_filenames: false
