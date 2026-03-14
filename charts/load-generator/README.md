@@ -2,8 +2,15 @@
 
 Helm chart to run k6 load against Bookinfo services.
 
+Autoscaling is enabled by default. When `autoscaling.enabled=true`, the chart renders an HPA and leaves `Deployment.spec.replicas` unmanaged so Kubernetes HPA can control the replica count without GitOps drift. `replicaCount` is only used when autoscaling is disabled.
+
 ## Values
 
+- `replicaCount`: fallback replica count used only when `autoscaling.enabled=false`
+- `autoscaling.enabled`: enable HorizontalPodAutoscaler generation
+- `autoscaling.minReplicas`: minimum replica count for HPA
+- `autoscaling.maxReplicas`: maximum replica count for HPA
+- `autoscaling.targetCPUUtilizationPercentage`: CPU utilization target for HPA
 - `target.baseUrl`: productpage service base URL
 - `target.detailsBaseUrl`: details service base URL
 - `target.ratingsBaseUrl`: ratings service base URL
@@ -15,3 +22,9 @@ Helm chart to run k6 load against Bookinfo services.
 - `target.preAllocatedVUs`: k6 pre-allocated VUs
 - `target.maxVUs`: k6 max VUs
 - `image.repository`, `image.tag`, `image.pullPolicy`: k6 image settings
+
+## Default autoscaling profile
+
+- `autoscaling.minReplicas=1`
+- `autoscaling.maxReplicas=5`
+- `autoscaling.targetCPUUtilizationPercentage=60`

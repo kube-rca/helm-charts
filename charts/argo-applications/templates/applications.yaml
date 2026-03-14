@@ -37,6 +37,11 @@ spec:
 {{- if hasKey $app "syncPolicy" }}
   {{- if kindIs "map" $app.syncPolicy }}
     {{- $syncPolicy = merge (deepCopy $defaultSyncPolicy) $app.syncPolicy }}
+    {{- if hasKey $app.syncPolicy "syncOptions" }}
+      {{- $defaultSyncOptions := default (list) (index $defaultSyncPolicy "syncOptions") }}
+      {{- $appSyncOptions := default (list) (index $app.syncPolicy "syncOptions") }}
+      {{- $_ := set $syncPolicy "syncOptions" (uniq (concat $defaultSyncOptions $appSyncOptions)) }}
+    {{- end }}
   {{- else }}
     {{- $syncPolicy = $app.syncPolicy }}
   {{- end }}
