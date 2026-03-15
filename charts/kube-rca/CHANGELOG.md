@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.6.0](https://github.com/kube-rca/helm-charts/compare/0.5.0...0.6.0) (2026-03-15)
+
+
+### Features
+
+* alert flapping 환경변수 (KAN-155) ([7532d90](https://github.com/kube-rca/helm-charts/commit/7532d90f6b4485644795601e4081cc3356d97575))
+* flapping enable/disable (KAN-155) ([09f8058](https://github.com/kube-rca/helm-charts/commit/09f8058bafe6f3f7092d6967bb5a1f5bd64e6399))
+* **kube-rca:** add LLM retry configuration for agent (KAN-159) ([605d9dd](https://github.com/kube-rca/helm-charts/commit/605d9dd713d21f074ffe76f41bbcab33db5caf1d))
+* **kube-rca:** add MANUAL_ANALYZE_SEVERITIES env for analysis mode (KAN-172) ([d2091d6](https://github.com/kube-rca/helm-charts/commit/d2091d65460457ed20bf3cc71f49d90c62c6de2f))
+* **kube-rca:** add OIDC authentication helm values and deployment env ([7a96d50](https://github.com/kube-rca/helm-charts/commit/7a96d50748531a36842ee9cf7b42a39567ddbed2))
+* **kube-rca:** replace hook job with initContainer and add DB-aware probes ([e708991](https://github.com/kube-rca/helm-charts/commit/e708991ffb6d6511e559bf010581336964d13488))
+
+
+### Bug Fixes
+
+* publish chart and image paths under kube-rca-ecr ([128aaa6](https://github.com/kube-rca/helm-charts/commit/128aaa6c043e8caa2a50fbdcac62e4ae754f0293))
+
 ## [0.5.0](https://github.com/kube-rca/helm-charts/compare/0.4.0...0.5.0) (2026-02-09)
 
 
