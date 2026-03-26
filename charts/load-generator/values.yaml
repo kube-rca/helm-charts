@@ -21,7 +21,7 @@ target:
     details: 40
     ratings: 40
   rps: 75
-  duration: "4h" # 4 hours (cycle via restart)
+  duration: "4h" # 4 hours per cycle (wrapper restarts k6 after completion)
   prefix: ""
   preAllocatedVUs: 60
   maxVUs: 300

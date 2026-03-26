@@ -35,10 +35,14 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - k6
-            - run
-            - --quiet
-            - /scripts/script.js
+            - /bin/sh
+            - -c
+            - |
+              trap 'exit 0' TERM INT
+              while true; do
+                k6 run --quiet /scripts/script.js
+                sleep 5
+              done
           env:
             - name: BASE_URL
               value: {{ .Values.target.baseUrl | quote }}
