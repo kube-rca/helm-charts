@@ -19,7 +19,7 @@ alertmanager:
           - alertmanager.kkamji.net
   config:
     global:
-      resolve_timeout: 5m
+      resolve_timeout: 1m
     route:
       receiver: "kube-rca-backend"
       group_by:
@@ -234,7 +234,7 @@ additionalPrometheusRulesMap:
               )
               * on (namespace, pod, container) group_left(reason)
               kube_pod_container_status_last_terminated_reason{job="kube-state-metrics"}
-            for: 1m
+            for: 0s
             labels:
               severity: critical
             annotations:
@@ -253,7 +253,7 @@ additionalPrometheusRulesMap:
                 reason="ImagePullBackOff",
                 job="kube-state-metrics"
               } == 1
-            for: 1m
+            for: 0s
             labels:
               severity: critical
             annotations:
@@ -273,7 +273,7 @@ additionalPrometheusRulesMap:
                 /
                 sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
               ) > 0.1
-            for: 3m
+            for: 0s
             labels:
               severity: warning
               namespace: "{{ $labels.destination_service_namespace }}"
@@ -288,7 +288,7 @@ additionalPrometheusRulesMap:
                 /
                 sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
               ) > 0.3
-            for: 3m
+            for: 0s
             labels:
               severity: critical
               namespace: "{{ $labels.destination_service_namespace }}"
@@ -308,7 +308,7 @@ additionalPrometheusRulesMap:
                 /
                 sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
               ) > 0.1
-            for: 3m
+            for: 0s
             labels:
               severity: warning
               namespace: "{{ $labels.destination_service_namespace }}"
@@ -323,7 +323,7 @@ additionalPrometheusRulesMap:
                 /
                 sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
               ) > 0.3
-            for: 3m
+            for: 0s
             labels:
               severity: critical
               namespace: "{{ $labels.destination_service_namespace }}"
@@ -342,7 +342,7 @@ additionalPrometheusRulesMap:
                 0.95,
                 sum(rate(istio_request_duration_milliseconds_bucket{reporter="destination"}[1m])) by (le, destination_service_namespace)
               ) > 3000
-            for: 3m
+            for: 0s
             labels:
               severity: warning
               namespace: "{{ $labels.destination_service_namespace }}"
@@ -355,7 +355,7 @@ additionalPrometheusRulesMap:
                 0.95,
                 sum(rate(istio_request_duration_milliseconds_bucket{reporter="destination"}[1m])) by (le, destination_service_namespace)
               ) > 5000
-            for: 3m
+            for: 0s
             labels:
               severity: critical
               namespace: "{{ $labels.destination_service_namespace }}"
