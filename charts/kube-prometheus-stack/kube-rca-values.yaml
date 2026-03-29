@@ -32,7 +32,7 @@ alertmanager:
         ]
       group_wait: 10s
       group_interval: 10m
-      repeat_interval: 4h
+      repeat_interval: 15m
       routes:
         # Watchdog 예외처리
         - receiver: "null"
