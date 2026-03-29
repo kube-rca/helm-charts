@@ -31,7 +31,7 @@ alertmanager:
           "destination_service_name",
         ]
       group_wait: 10s
-      group_interval: 10m
+      group_interval: 1m
       repeat_interval: 15m
       routes:
         # Watchdog 예외처리
@@ -228,7 +228,7 @@ additionalPrometheusRulesMap:
           - alert: KubePodContainerTerminated
             expr: |
               (
-                increase(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[5m]) > 0
+                increase(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[1m]) > 0
                 and on (namespace, pod, container)
                 kube_pod_container_status_last_terminated_exitcode{job="kube-state-metrics"} != 0
               )
@@ -269,9 +269,9 @@ additionalPrometheusRulesMap:
           - alert: IstioHigh5xxErrorRateWarning
             expr: |
               (
-                sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+                sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[1m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
                 /
-                sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+                sum(rate(istio_requests_total{reporter="source"}[1m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
               ) > 0.1
             for: 0s
             labels:
@@ -284,9 +284,9 @@ additionalPrometheusRulesMap:
           - alert: IstioHigh5xxErrorRateCritical
             expr: |
               (
-                sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+                sum(rate(istio_requests_total{response_code=~"5.*", reporter="source"}[1m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
                 /
-                sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+                sum(rate(istio_requests_total{reporter="source"}[1m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
               ) > 0.3
             for: 0s
             labels:
@@ -304,9 +304,9 @@ additionalPrometheusRulesMap:
           - alert: IstioHigh4xxErrorRateWarning
             expr: |
               (
-                sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+                sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[1m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
                 /
-                sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+                sum(rate(istio_requests_total{reporter="source"}[1m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
               ) > 0.1
             for: 0s
             labels:
@@ -319,9 +319,9 @@ additionalPrometheusRulesMap:
           - alert: IstioHigh4xxErrorRateCritical
             expr: |
               (
-                sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+                sum(rate(istio_requests_total{response_code=~"4.*", reporter="source"}[1m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
                 /
-                sum(rate(istio_requests_total{reporter="source"}[5m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
+                sum(rate(istio_requests_total{reporter="source"}[1m])) by (destination_workload, destination_version, destination_service_name, destination_service_namespace)
               ) > 0.3
             for: 0s
             labels:
