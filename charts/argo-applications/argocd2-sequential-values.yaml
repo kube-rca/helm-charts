@@ -50,6 +50,8 @@ applications:
       helm:
         values: |
           installCRDs: true
+          crds:
+            unsafeServeV1Beta1: true
   ingress-nginx:
     enabled: true
     name: ingress-nginx
