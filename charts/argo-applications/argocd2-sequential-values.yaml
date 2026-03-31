@@ -58,7 +58,7 @@ applications:
       path: charts/kube-rca
       helm:
         valueFiles:
-          - kube-rca-values.yaml
+          - argocd2-gp2-values.yaml
   kube-prometheus-stack:
     enabled: true
     name: kube-prometheus-stack
@@ -97,7 +97,7 @@ applications:
       path: charts/loki
       helm:
         valueFiles:
-          - kube-rca-values.yaml
+          - argocd2-gp2-values.yaml
   tempo:
     enabled: true
     name: tempo
