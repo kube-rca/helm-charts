@@ -1,5 +1,3 @@
-syncPolicy: null
-
 applications:
   argocd:
     enabled: true
@@ -234,6 +232,9 @@ applications:
     destination:
       namespace: bookinfo
     syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
       syncOptions:
         - CreateNamespace=true
         - ApplyOutOfSyncOnly=true
