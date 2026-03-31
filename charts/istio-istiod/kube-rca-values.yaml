@@ -3,10 +3,9 @@
 
 global:
   istioNamespace: istio-system
-  # Split ownership with istio-base app to avoid ArgoCD shared-resource conflicts.
-  # istio-base: cluster scope (CRDs / cluster-scoped resources)
-  # istio-istiod: namespace scope (deployment / configmaps / serviceaccounts)
-  resourceScope: namespace
+  # istiod needs cluster-scoped RBAC to watch the istio config ConfigMap and related resources.
+  # istio-base still owns CRDs; istio-istiod owns its runtime RBAC.
+  resourceScope: all
 
   # Keep proxy tracer disabled to rely on meshConfig extensionProviders.
   proxy:
