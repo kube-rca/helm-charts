@@ -45,6 +45,17 @@ alertmanager:
         - receiver: "null"
           matchers:
             - alertname = "KubeVersionMismatch"
+        # kube-rca로 전송하지 않을 기본 알림 예외처리
+        - receiver: "null"
+          matchers:
+            - alertname = "TargetDown"
+            - job = "kubernetes-pods"
+        - receiver: "null"
+          matchers:
+            - alertname = "KubeControllerManagerDown"
+        - receiver: "null"
+          matchers:
+            - alertname = "KubeSchedulerDown"
         - receiver: "kube-rca-backend"
           matchers:
             - alertname = "KubePodContainerTerminated"
