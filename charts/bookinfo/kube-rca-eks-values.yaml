@@ -8,13 +8,13 @@ ingress:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     cert-manager.io/cluster-issuer: letsencrypt-prod
   hosts:
-    - kuberca-demo.kkamji.net
+    - kuberca-demo2.kkamji.net
   paths:
     - /
   tls:
-    - secretName: kuberca-demo-tls
+    - secretName: kuberca-demo2-tls
       hosts:
-        - kuberca-demo.kkamji.net
+        - kuberca-demo2.kkamji.net
 
 # Resource limits based on observed usage (kubectl top po)
 # load-generator is excluded.
