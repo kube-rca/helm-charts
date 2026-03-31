@@ -52,6 +52,33 @@ applications:
           installCRDs: true
           crds:
             unsafeServeV1Beta1: true
+  cert-manager:
+    enabled: true
+    name: cert-manager
+    namespace: argocd
+    annotations:
+      argocd.argoproj.io/sync-wave: "-4"
+    destination:
+      namespace: cert-manager
+    source:
+      repoURL: https://charts.jetstack.io
+      chart: cert-manager
+      targetRevision: v1.20.1
+      helm:
+        values: |
+          installCRDs: true
+  cert-manager-issuer:
+    enabled: true
+    name: cert-manager-issuer
+    namespace: argocd
+    annotations:
+      argocd.argoproj.io/sync-wave: "-3"
+    destination:
+      namespace: cert-manager
+    source:
+      repoURL: https://github.com/kube-rca/helm-charts.git
+      targetRevision: main
+      path: charts/cert-manager-issuer
   ingress-nginx:
     enabled: true
     name: ingress-nginx
