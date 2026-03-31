@@ -34,7 +34,7 @@ applications:
       directory:
         recurse: true
   ingress-nginx:
-    enabled: false
+    enabled: true
     name: ingress-nginx
     namespace: argocd
     destination:
