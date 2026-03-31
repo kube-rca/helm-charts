@@ -216,6 +216,8 @@ prometheus:
 defaultRules:
   disabled:
     KubePodCrashLooping: true
+    KubeControllerManagerDown: true
+    KubeSchedulerDown: true
 
 additionalPrometheusRulesMap:
   kube-rca-container-terminated:
