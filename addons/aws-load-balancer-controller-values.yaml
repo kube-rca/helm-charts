@@ -1,0 +1,18 @@
+clusterName: kube-rca-dev-eks
+region: ap-northeast-2
+vpcId: vpc-08285f940e25a8441
+
+replicaCount: 2
+defaultTargetType: ip
+enableServiceMutatorWebhook: false
+
+serviceAccount:
+  create: true
+  name: aws-load-balancer-controller
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::376129852049:role/kube-rca-dev-aws-load-balancer-controller
+
+ingressClass: alb
+createIngressClassResource: true
+ingressClassConfig:
+  default: false
