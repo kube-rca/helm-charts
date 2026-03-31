@@ -1,0 +1,7 @@
+controller:
+  config:
+    # Work around ingress-nginx v1.12.0 rejecting cert-manager HTTP-01 solver paths.
+    strict-validate-path-type: "false"
+
+tcp:
+  "5432": "kube-rca/kube-rca-postgresql:5432"

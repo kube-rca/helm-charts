@@ -91,7 +91,7 @@ applications:
       path: charts/ingress-nginx
       helm:
         valueFiles:
-          - kube-rca-values.yaml
+          - argocd2-values.yaml
   kube-rca:
     enabled: true
     name: kube-rca
