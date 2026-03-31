@@ -12,3 +12,7 @@ spec:
       - http01:
           ingress:
             class: {{ .Values.issuer.ingressClassName | quote }}
+            podTemplate:
+              metadata:
+                annotations:
+{{ toYaml .Values.issuer.solverPodAnnotations | indent 18 }}
