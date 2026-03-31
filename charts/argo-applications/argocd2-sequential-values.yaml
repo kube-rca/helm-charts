@@ -25,6 +25,8 @@ applications:
     enabled: true
     name: k8s-resources
     namespace: argocd
+    annotations:
+      argocd.argoproj.io/sync-wave: "-1"
     destination:
       namespace: kube-rca
     source:
@@ -33,6 +35,21 @@ applications:
       path: external-secrets
       directory:
         recurse: true
+  external-secrets:
+    enabled: true
+    name: external-secrets
+    namespace: argocd
+    annotations:
+      argocd.argoproj.io/sync-wave: "-2"
+    destination:
+      namespace: external-secrets
+    source:
+      repoURL: https://charts.external-secrets.io
+      chart: external-secrets
+      targetRevision: 2.2.0
+      helm:
+        values: |
+          installCRDs: true
   ingress-nginx:
     enabled: true
     name: ingress-nginx
