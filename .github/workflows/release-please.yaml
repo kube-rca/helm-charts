@@ -27,4 +27,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh workflow run publish-chart.yaml \
+            --repo "${{ github.repository }}" \
             --ref "${{ steps.release.outputs['charts/kube-rca--tag_name'] }}"
