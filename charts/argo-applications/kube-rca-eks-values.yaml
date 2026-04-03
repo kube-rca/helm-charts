@@ -285,13 +285,6 @@ applications:
         - CreateNamespace=true
         - ApplyOutOfSyncOnly=true
         - ServerSideApply=true
-        - RespectIgnoreDifferences=true
-    ignoreDifferences:
-      - group: apps
-        kind: Deployment
-        name: load-generator
-        jsonPointers:
-          - /spec/replicas
     source:
       repoURL: https://github.com/kube-rca/helm-charts.git
       targetRevision: main
