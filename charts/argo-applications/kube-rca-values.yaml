@@ -53,7 +53,7 @@ applications:
     destination:
       namespace: kube-rca
     source:
-      repoURL: https://github.com/kube-rca/helm-charts.git
+      repoURL: https://github.com/kube-rca/kube-rca.git
       targetRevision: main
       path: charts/kube-rca
       helm:
