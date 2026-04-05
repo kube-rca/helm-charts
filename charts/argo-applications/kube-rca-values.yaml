@@ -171,9 +171,15 @@ applications:
       - group: admissionregistration.k8s.io
         kind: ValidatingWebhookConfiguration
         name: istiod-default-validator
-        jsonPointers:
-          - /webhooks/0/clientConfig/caBundle
-          - /webhooks/0/failurePolicy
+        jqPathExpressions:
+          - .webhooks[].clientConfig.caBundle
+          - .webhooks[].failurePolicy
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+        name: istio-validator-istio-system
+        jqPathExpressions:
+          - .webhooks[].clientConfig.caBundle
+          - .webhooks[].failurePolicy
     source:
       repoURL: https://github.com/kube-rca/helm-charts.git
       targetRevision: main
@@ -255,3 +261,16 @@ applications:
       repoURL: https://github.com/kube-rca/helm-charts.git
       targetRevision: main
       path: charts/grafana-dashboards
+  openclaw:
+    enabled: true
+    name: openclaw
+    namespace: argocd
+    destination:
+      namespace: openclaw
+    source:
+      repoURL: https://github.com/KKamJi98/helm-charts.git
+      targetRevision: main
+      path: openclaw
+      helm:
+        valueFiles:
+          - kkamji_local_values.yaml
