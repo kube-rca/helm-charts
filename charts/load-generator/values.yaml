@@ -20,11 +20,11 @@ target:
     productpage: 20
     details: 40
     ratings: 40
-  rps: 75
-  duration: "4h" # 4 hours per cycle (wrapper restarts k6 after completion)
+  rps: 30
+  duration: "1h" # 1 hour per cycle (wrapper restarts k6 to release accumulated metric heap)
   prefix: ""
-  preAllocatedVUs: 60
-  maxVUs: 300
+  preAllocatedVUs: 30
+  maxVUs: 150
 
 resources:
   limits:
